@@ -3,8 +3,13 @@
   "WorkspaceRootPath": "D:\\code\\test\\test-11-23\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{1B28A102-25AF-4796-9B74-3214A77B12C7}|test-11-23.vcxproj|D:\\code\\test\\test-11-23\\test.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{1B28A102-25AF-4796-9B74-3214A77B12C7}|test-11-23.vcxproj|solutionrelative:test.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+=======
+      "AbsoluteMoniker": "D:0:0:{F22B3B78-843E-4A14-AA7A-2A56D401C7D2}|test-11-23.vcxproj|D:\\code\\test\\test-11-23\\test.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F22B3B78-843E-4A14-AA7A-2A56D401C7D2}|test-11-23.vcxproj|solutionrelative:test.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+>>>>>>> 912acc8185066f7ae642a2fadb62d2e064288d4a
     }
   ],
   "DocumentGroupContainers": [
@@ -24,9 +29,15 @@
               "RelativeDocumentMoniker": "test.cpp",
               "ToolTip": "D:\\code\\test\\test-11-23\\test.cpp",
               "RelativeToolTip": "test.cpp",
+<<<<<<< HEAD
               "ViewState": "AgIAACkAAAAAAAAAAAAuwEUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-23T10:48:18.142Z",
+=======
+              "ViewState": "AgIAACoAAAAAAAAAAAAowEQAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-23T10:33:47.913Z",
+>>>>>>> 912acc8185066f7ae642a2fadb62d2e064288d4a
               "EditorCaption": ""
             }
           ]
