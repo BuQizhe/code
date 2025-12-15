@@ -1,0 +1,80 @@
+//{
+//  "apiType": "stageMode",
+//  "buildOption": {
+//    "resOptions": {
+//      "copyCodeResource": {
+//        "enable": false
+//      }
+//    }
+//  },
+//  "buildOptionSet": [
+//    {
+//      "name": "release",
+//      "arkOptions": {
+//        "obfuscation": {
+//          "ruleOptions": {
+//            "enable": false,
+//            "files": [
+//              "./obfuscation-rules.txt"
+//            ]
+//          }
+//        }
+//      }
+//    },
+//  ],
+//  "targets": [
+//    {
+//      "name": "default"
+//    },
+//    {
+//      "name": "ohosTest",
+//    }
+//  ]
+//}
+
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "dependencies": [],
+    "buildTypes": [
+      {
+        "name": "debug",
+        "cFlags": "-std=c++17 -O0 -g",
+        "cxxFlags": "-std=c++17 -O0 -g",
+        "arkOptions": {
+          "enableDebug": true,
+          "enableAssertions": true
+        }
+      },
+      {
+        "name": "release",
+        "cFlags": "-std=c++17 -O2",
+        "cxxFlags": "-std=c++17 -O2",
+        "arkOptions": {
+          "enableDebug": false,
+          "enableAssertions": false
+        }
+      }
+    ],
+    "targets": [
+      {
+        "name": "default",
+        "buildType": "debug"
+      }
+    ],
+    "compileOptions": {
+      "externalNativeBuild": {
+        "cmake": {
+          "path": "src/main/cpp/CMakeLists.txt",
+          "version": "3.20.1"
+        }
+      }
+    },
+    "apiVersion": {
+      "compatible": 10,
+      "target": 10,
+      "releaseType": "Release"
+    }
+  }
+}

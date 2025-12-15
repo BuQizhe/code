@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.20.1)
+project(CourseQueryCpp)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 引入鸿蒙NDK相关头文件和库
+include_directories(${OHOS_SDK_PATH}/native/sdk/include)
+link_directories(${OHOS_SDK_PATH}/native/sdk/libs/arm64-v8a)
+
+# 配置源文件
+file(GLOB_RECURSE SRC_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+)
+
+# 配置头文件目录
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# 构建共享库
+add_library(entry SHARED
+    ${SRC_FILES}
+)
+
+# 链接鸿蒙系统库
+target_link_libraries(entry
+    # 基础能力库
+    libohos_ability_base.so
+    # ArkUI C++库
+    libarkui_ndk.so
+    # 数据存储库（RelationalStore）
+    librelational_store.so
+    # Preferences库
+    libpreferences.so
+    # 网络库
+    libnet_http.so
+    # 权限库
+    libability_accessctrl.so
+    # 日志库
+    libhilog_ndk.so
+    # 工具库
+    libutils.so
+)
+
+# 设置库输出路径
+set_target_properties(entry PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../libs/${ANDROID_ABI}
+)
