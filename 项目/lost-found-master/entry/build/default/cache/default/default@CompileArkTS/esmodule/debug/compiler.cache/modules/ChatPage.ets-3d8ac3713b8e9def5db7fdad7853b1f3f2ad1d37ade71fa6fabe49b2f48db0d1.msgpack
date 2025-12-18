@@ -1,0 +1,750 @@
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚMlif (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+// é¡¹ç›®ä½œè€…ï¼šæ¨é’°ç„¶
+import router from "@ohos.router";
+import { HeaderBar } from "../components/CommonComponents";
+import { HttpUtils } from "../utils/HttpUtils";
+class ChatPage extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.__contactName = new ObservedPropertySimplePU('ç‹åŒå­¦', this, "contactName");
+        this.__contactAvatar = new ObservedPropertySimplePU('ç‹', this, "contactAvatar");
+        this.__inputText = new ObservedPropertySimplePU('', this, "inputText");
+        this.__messages = new ObservedPropertyObjectPU([], this, "messages");
+        this.__currentUserId = new ObservedPropertySimplePU('user_12345', this, "currentUserId");
+        this.__otherUserId = new ObservedPropertySimplePU('user_67890', this, "otherUserId");
+        this.baseUrl = 'http://rap2api.taobao.org/app/mock/323891';
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params) {
+        if (params.contactName !== undefined) {
+            this.contactName = params.contactName;
+        }
+        if (params.contactAvatar !== undefined) {
+            this.contactAvatar = params.contactAvatar;
+        }
+        if (params.inputText !== undefined) {
+            this.inputText = params.inputText;
+        }
+        if (params.messages !== undefined) {
+            this.messages = params.messages;
+        }
+        if (params.currentUserId !== undefined) {
+            this.currentUserId = params.currentUserId;
+        }
+        if (params.otherUserId !== undefined) {
+            this.otherUserId = params.otherUserId;
+        }
+        if (params.baseUrl !== undefined) {
+            this.baseUrl = params.baseUrl;
+        }
+    }
+    updateStateVars(params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__contactName.purgeDependencyOnElmtId(rmElmtId);
+        this.__contactAvatar.purgeDependencyOnElmtId(rmElmtId);
+        this.__inputText.purgeDependencyOnElmtId(rmElmtId);
+        this.__messages.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentUserId.purgeDependencyOnElmtId(rmElmtId);
+        this.__otherUserId.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__contactName.aboutToBeDeleted();
+        this.__contactAvatar.aboutToBeDeleted();
+        this.__inputText.aboutToBeDeleted();
+        this.__messages.aboutToBeDeleted();
+        this.__currentUserId.aboutToBeDeleted();
+        this.__otherUserId.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    get contactName() {
+        return this.__contactName.get();
+    }
+    set contactName(newValue) {
+        this.__contactName.set(newValue);
+    }
+    get contactAvatar() {
+        return this.__contactAvatar.get();
+    }
+    set contactAvatar(newValue) {
+        this.__contactAvatar.set(newValue);
+    }
+    get inputText() {
+        return this.__inputText.get();
+    }
+    set inputText(newValue) {
+        this.__inputText.set(newValue);
+    }
+    get messages() {
+        return this.__messages.get();
+    }
+    set messages(newValue) {
+        this.__messages.set(newValue);
+    }
+    get currentUserId() {
+        return this.__currentUserId.get();
+    }
+    set currentUserId(newValue) {
+        this.__currentUserId.set(newValue);
+    }
+    get otherUserId() {
+        return this.__otherUserId.get();
+    }
+    set otherUserId(newValue) {
+        this.__otherUserId.set(newValue);
+    }
+    aboutToAppear() {
+        // è·å–è·¯ç”±å‚æ•°
+        const params = router.getParams();
+        if (params) {
+            this.contactName = Reflect.get(params, 'contactName') || 'ç‹åŒå­¦';
+            this.contactAvatar = Reflect.get(params, 'contactAvatar') || 'ç‹';
+            // å…¼å®¹æ—§çš„receiverIdå‚æ•°å’Œæ–°çš„otherUserIdå‚æ•°
+            this.otherUserId = Reflect.get(params, 'otherUserId') ||
+                Reflect.get(params, 'receiverId') ||
+                'user_67890';
+        }
+        // åŠ è½½å¯¹è¯å†å²
+        this.loadConversation();
+    }
+    // åŠ è½½å¯¹è¯å†å²
+    async loadConversation() {
+        try {
+            const url = `${this.baseUrl}/api/message/conversation?userId=${this.currentUserId}&otherUserId=${this.otherUserId}`;
+            const response = await HttpUtils.get(url);
+            const apiResponse = JSON.parse(response);
+            if (apiResponse.code === 200 && apiResponse.data) {
+                this.messages = apiResponse.data.map((msg) => {
+                    return {
+                        id: msg.messageId,
+                        content: msg.content,
+                        time: this.formatTime(msg.sendTime),
+                        isSent: msg.senderId === this.currentUserId
+                    };
+                });
+            }
+            else {
+                console.error('è·å–å¯¹è¯å†å²å¤±è´¥:', apiResponse.message);
+            }
+        }
+        catch (error) {
+            console.error('åŠ è½½å¯¹è¯å†å²å‡ºé”™:', error);
+        }
+    }
+    // æ ¼å¼åŒ–æ—¶é—´
+    formatTime(timeStr) {
+        try {
+            const date = new Date(timeStr);
+            return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        }
+        catch (error) {
+            return timeStr;
+        }
+    }
+    // å‘é€æ¶ˆæ¯
+    async sendMessage() {
+        if (this.inputText.trim()) {
+            const content = this.inputText.trim();
+            this.inputText = ''; // å…ˆæ¸…ç©ºè¾“å…¥æ¡†
+            // å…ˆæ·»åŠ åˆ°æœ¬åœ°æ˜¾ç¤º
+            const tempMessage = {
+                id: Date.now().toString(),
+                content: content,
+                time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+                isSent: true
+            };
+            this.messages.push(tempMessage);
+            try {
+                // å‘é€åˆ°æœåŠ¡å™¨
+                const url = `${this.baseUrl}/api/message/send`;
+                const requestData = {
+                    content: content,
+                    senderId: this.currentUserId,
+                    receiverId: this.otherUserId,
+                    images: []
+                };
+                const response = await HttpUtils.post(url, requestData);
+                const apiResponse = JSON.parse(response);
+                if (apiResponse.code === 200 && apiResponse.data) {
+                    console.log('æ¶ˆæ¯å‘é€æˆåŠŸ:', apiResponse.data);
+                    // æ›´æ–°æ¶ˆæ¯IDä¸ºæœåŠ¡å™¨è¿”å›çš„ID
+                    const lastIndex = this.messages.length - 1;
+                    if (lastIndex >= 0) {
+                        this.messages[lastIndex].id = apiResponse.data.messageId;
+                    }
+                }
+                else {
+                    console.error('å‘é€æ¶ˆæ¯å¤±è´¥:', apiResponse.message);
+                    // å‘é€å¤±è´¥ï¼Œå¯ä»¥åœ¨è¿™é‡Œæ·»åŠ é‡è¯•é€»è¾‘æˆ–é”™è¯¯æç¤º
+                }
+            }
+            catch (error) {
+                console.error('å‘é€æ¶ˆæ¯å‡ºé”™:', error);
+                // å‘é€å¤±è´¥ï¼Œå¯ä»¥åœ¨è¿™é‡Œæ·»åŠ é‡è¯•é€»è¾‘æˆ–é”™è¯¯æç¤º
+            }
+        }
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width('100%');
+            Column.height('100%');
+            Column.backgroundColor('#f8f9fa');
+        }, Column);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new 
+                    // å¤´éƒ¨å¯¼èˆª - ä½¿ç”¨CommonComponents
+                    HeaderBar(this, {
+                        title: this.contactName,
+                        showBack: true,
+                        showAction: false,
+                        onBack: () => {
+                            router.back();
+                        }
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/ChatPage.ets", line: 118, col: 7 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {
+                            title: this.contactName,
+                            showBack: true,
+                            showAction: false,
+                            onBack: () => {
+                                router.back();
+                            }
+                        };
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {
+                        title: this.contactName,
+                        showBack: true,
+                        showAction: false
+                    });
+                }
+            }, { name: "HeaderBar" });
+        }
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // èŠå¤©å†…å®¹åŒºåŸŸ
+            Column.create();
+            // èŠå¤©å†…å®¹åŒºåŸŸ
+            Column.layoutWeight(1);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // æ¶ˆæ¯åˆ—è¡¨
+            Scroll.create();
+            // æ¶ˆæ¯åˆ—è¡¨
+            Scroll.layoutWeight(1);
+            // æ¶ˆæ¯åˆ—è¡¨
+            Scroll.scrollBar(BarState.Off);
+            // æ¶ˆæ¯åˆ—è¡¨
+            Scroll.backgroundColor('#f8f9fa');
+        }, Scroll);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width('100%');
+            Column.padding({ left: 15, right: 15, top: 20 });
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            ForEach.create();
+            const forEachItemGenFunction = _item => {
+                const message = _item;
+                this.observeComponentCreation2((elmtId, isInitialRender) => {
+                    If.create();
+                    if (message.isSent) {
+                        this.ifElseBranchUpdateFunction(0, () => {
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                                Row.create();
+                                // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                                Row.width('100%');
+                                // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                                Row.justifyContent(FlexAlign.End);
+                                // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                                Row.margin({ bottom: 15 });
+                            }, Row);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Column.create();
+                                Column.alignItems(HorizontalAlign.End);
+                                Column.margin({ right: 10 });
+                                Column.constraintSize({ maxWidth: '70%' });
+                            }, Column);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Stack.create();
+                                Stack.backgroundColor('#667eea');
+                                Stack.borderRadius(15);
+                            }, Stack);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Text.create(message.content);
+                                Text.fontSize(16);
+                                Text.fontColor(Color.White);
+                                Text.padding(10);
+                                Text.maxLines(10);
+                                Text.textAlign(TextAlign.Start);
+                            }, Text);
+                            Text.pop();
+                            Stack.pop();
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Text.create(message.time);
+                                Text.fontSize(12);
+                                Text.fontColor('#999999');
+                                Text.margin({ top: 5 });
+                                Text.alignSelf(ItemAlign.End);
+                            }, Text);
+                            Text.pop();
+                            Column.pop();
+                            // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                            Row.pop();
+                        });
+                    }
+                    else {
+                        this.ifElseBranchUpdateFunction(1, () => {
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                                Row.create();
+                                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                                Row.width('100%');
+                                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                                Row.justifyContent(FlexAlign.Start);
+                                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                                Row.alignItems(VerticalAlign.Top);
+                                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                                Row.margin({ bottom: 15 });
+                            }, Row);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                // å¤´åƒ
+                                Text.create(this.contactAvatar);
+                                // å¤´åƒ
+                                Text.fontSize(16);
+                                // å¤´åƒ
+                                Text.fontColor(Color.White);
+                                // å¤´åƒ
+                                Text.width(36);
+                                // å¤´åƒ
+                                Text.height(36);
+                                // å¤´åƒ
+                                Text.borderRadius(18);
+                                // å¤´åƒ
+                                Text.backgroundColor('#667eea');
+                                // å¤´åƒ
+                                Text.textAlign(TextAlign.Center);
+                                // å¤´åƒ
+                                Text.margin({ right: 10 });
+                            }, Text);
+                            // å¤´åƒ
+                            Text.pop();
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Column.create();
+                                Column.alignItems(HorizontalAlign.Start);
+                                Column.constraintSize({ maxWidth: '70%' });
+                            }, Column);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Stack.create();
+                                Stack.backgroundColor({ "id": 125833939, "type": 10001, params: [], "bundleName": "com.pizza.lostfound", "moduleName": "entry" });
+                                Stack.borderRadius(15);
+                            }, Stack);
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Text.create(message.content);
+                                Text.fontSize(16);
+                                Text.fontColor('#333333');
+                                Text.padding(10);
+                                Text.maxLines(10);
+                                Text.textAlign(TextAlign.Start);
+                            }, Text);
+                            Text.pop();
+                            Stack.pop();
+                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                Text.create(message.time);
+                                Text.fontSize(12);
+                                Text.fontColor('#999999');
+                                Text.margin({ top: 5 });
+                                Text.alignSelf(ItemAlign.Start);
+                            }, Text);
+                            Text.pop();
+                            Column.pop();
+                            // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                            Row.pop();
+                        });
+                    }
+                }, If);
+                If.pop();
+            };
+            this.forEachUpdateFunction(elmtId, this.messages, forEachItemGenFunction);
+        }, ForEach);
+        ForEach.pop();
+        Column.pop();
+        // æ¶ˆæ¯åˆ—è¡¨
+        Scroll.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // è¾“å…¥æ¡†åŒºåŸŸ
+            Row.create();
+            // è¾“å…¥æ¡†åŒºåŸŸ
+            Row.width('100%');
+            // è¾“å…¥æ¡†åŒºåŸŸ
+            Row.padding({ left: 15, right: 15, top: 15, bottom: 15 });
+            // è¾“å…¥æ¡†åŒºåŸŸ
+            Row.backgroundColor(Color.White);
+            // è¾“å…¥æ¡†åŒºåŸŸ
+            Row.border({ width: { top: 1 }, color: '#eeeeee' });
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            TextInput.create({ placeholder: 'è¾“å…¥æ¶ˆæ¯...', text: this.inputText });
+            TextInput.layoutWeight(1);
+            TextInput.height(40);
+            TextInput.fontSize(16);
+            TextInput.borderRadius(20);
+            TextInput.backgroundColor(Color.White);
+            TextInput.border({ width: 1, color: '#dddddd' });
+            TextInput.padding({ left: 15, right: 15 });
+            TextInput.onChange((value) => {
+                this.inputText = value;
+            });
+            TextInput.onSubmit(() => {
+                this.sendMessage();
+            });
+        }, TextInput);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel('å‘é€');
+            Button.fontSize(16);
+            Button.fontColor(Color.White);
+            Button.backgroundColor('#667eea');
+            Button.borderRadius(20);
+            Button.padding({ left: 20, right: 20, top: 10, bottom: 10 });
+            Button.margin({ left: 10 });
+            Button.onClick(() => {
+                this.sendMessage();
+            });
+        }, Button);
+        Button.pop();
+        // è¾“å…¥æ¡†åŒºåŸŸ
+        Row.pop();
+        // èŠå¤©å†…å®¹åŒºåŸŸ
+        Column.pop();
+        Column.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+    static getEntryName() {
+        return "ChatPage";
+    }
+}
+registerNamedRoute(() => new ChatPage(undefined, {}), "", { bundleName: "com.pizza.lostfound", moduleName: "entry", pagePath: "pages/ChatPage", pageFullPath: "entry/src/main/ets/pages/ChatPage", integratedHsp: "false", moduleType: "followWithHap" });
+//# sourceMappingURL=ChatPage.js.mapÂ“Ù hvigor_ignore_D:_devecostudio-windows-6.0.1.251_devecostudio-windows-6.0.1.251_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsÙOD:\project\lost-found-master\entry\src\main\ets\components\CommonComponents.etsÙCD:\project\lost-found-master\entry\src\main\ets\utils\HttpUtils.etsÙBD:\project\lost-found-master\entry\src\main\ets\pages\ChatPage.etsÔrB›ªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ"D:\project\lost-found-master\entry¼D:\project\lost-found-master¥entry¥1.0.0Ô  Ù"D:\project\lost-found-master\entryÔrCÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ!!// é¡¹ç›®ä½œè€…ï¼šæ¨é’°ç„¶
+import { router } from '@kit.ArkUI';
+import { ChatMessage } from "../po/ChatMessage"
+import { HeaderBar } from "../components/CommonComponents"
+import { HttpUtils } from "../utils/HttpUtils"
+import { ApiResponse, ApiMessageData, SendMessageRequest, SendMessageResponse } from '../po/CommonTypes';
+
+
+@Entry
+@Component
+struct ChatPage {
+  @State contactName: string = 'ç‹åŒå­¦';
+  @State contactAvatar: string = 'ç‹';
+  @State inputText: string = '';
+  @State messages: ChatMessage[] = [];
+  @State currentUserId: string = 'user_12345'; // å½“å‰ç”¨æˆ·ID
+  @State otherUserId: string = 'user_67890'; // å¯¹æ–¹ç”¨æˆ·ID
+  private baseUrl: string = 'http://rap2api.taobao.org/app/mock/323891';
+
+  aboutToAppear() {
+    // è·å–è·¯ç”±å‚æ•°
+    const params = router.getParams();
+    if (params) {
+      this.contactName = Reflect.get(params, 'contactName') as string || 'ç‹åŒå­¦';
+      this.contactAvatar = Reflect.get(params, 'contactAvatar') as string || 'ç‹';
+      // å…¼å®¹æ—§çš„receiverIdå‚æ•°å’Œæ–°çš„otherUserIdå‚æ•°
+      this.otherUserId = Reflect.get(params, 'otherUserId') as string || 
+                        Reflect.get(params, 'receiverId') as string || 
+                        'user_67890';
+    }
+    // åŠ è½½å¯¹è¯å†å²
+    this.loadConversation();
+  }
+
+  // åŠ è½½å¯¹è¯å†å²
+  async loadConversation() {
+    try {
+      const url = `${this.baseUrl}/api/message/conversation?userId=${this.currentUserId}&otherUserId=${this.otherUserId}`;
+      const response = await HttpUtils.get(url);
+      const apiResponse: ApiResponse<ApiMessageData[]> = JSON.parse(response);
+      
+      if (apiResponse.code === 200 && apiResponse.data) {
+        this.messages = apiResponse.data.map((msg: ApiMessageData): ChatMessage => {
+          return {
+            id: msg.messageId,
+            content: msg.content,
+            time: this.formatTime(msg.sendTime),
+            isSent: msg.senderId === this.currentUserId
+          };
+        });
+      } else {
+        console.error('è·å–å¯¹è¯å†å²å¤±è´¥:', apiResponse.message);
+      }
+    } catch (error) {
+      console.error('åŠ è½½å¯¹è¯å†å²å‡ºé”™:', error);
+    }
+  }
+
+  // æ ¼å¼åŒ–æ—¶é—´
+  formatTime(timeStr: string): string {
+    try {
+      const date = new Date(timeStr);
+      return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      return timeStr;
+    }
+  }
+
+  // å‘é€æ¶ˆæ¯
+  async sendMessage() {
+    if (this.inputText.trim()) {
+      const content = this.inputText.trim();
+      this.inputText = ''; // å…ˆæ¸…ç©ºè¾“å…¥æ¡†
+      
+      // å…ˆæ·»åŠ åˆ°æœ¬åœ°æ˜¾ç¤º
+      const tempMessage: ChatMessage = {
+        id: Date.now().toString(),
+        content: content,
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+        isSent: true
+      };
+      this.messages.push(tempMessage);
+      
+      try {
+        // å‘é€åˆ°æœåŠ¡å™¨
+        const url = `${this.baseUrl}/api/message/send`;
+        const requestData: SendMessageRequest = {
+          content: content,
+          senderId: this.currentUserId,
+          receiverId: this.otherUserId,
+          images: []
+        };
+        
+        const response = await HttpUtils.post(url, requestData);
+        const apiResponse: ApiResponse<SendMessageResponse> = JSON.parse(response);
+        
+        if (apiResponse.code === 200 && apiResponse.data) {
+          console.log('æ¶ˆæ¯å‘é€æˆåŠŸ:', apiResponse.data);
+          // æ›´æ–°æ¶ˆæ¯IDä¸ºæœåŠ¡å™¨è¿”å›çš„ID
+          const lastIndex = this.messages.length - 1;
+          if (lastIndex >= 0) {
+            this.messages[lastIndex].id = apiResponse.data.messageId;
+          }
+        } else {
+          console.error('å‘é€æ¶ˆæ¯å¤±è´¥:', apiResponse.message);
+          // å‘é€å¤±è´¥ï¼Œå¯ä»¥åœ¨è¿™é‡Œæ·»åŠ é‡è¯•é€»è¾‘æˆ–é”™è¯¯æç¤º
+        }
+      } catch (error) {
+        console.error('å‘é€æ¶ˆæ¯å‡ºé”™:', error);
+        // å‘é€å¤±è´¥ï¼Œå¯ä»¥åœ¨è¿™é‡Œæ·»åŠ é‡è¯•é€»è¾‘æˆ–é”™è¯¯æç¤º
+      }
+    }
+  }
+
+  build() {
+    Column() {
+      // å¤´éƒ¨å¯¼èˆª - ä½¿ç”¨CommonComponents
+      HeaderBar({
+        title: this.contactName,
+        showBack: true,
+        showAction: false,
+        onBack: () => {
+          router.back();
+        }
+      })
+
+      // èŠå¤©å†…å®¹åŒºåŸŸ
+      Column() {
+        // æ¶ˆæ¯åˆ—è¡¨
+        Scroll() {
+          Column() {
+            ForEach(this.messages, (message: ChatMessage) => {
+              if (message.isSent) {
+                // è‡ªå·±å‘é€çš„æ¶ˆæ¯ï¼ˆå³ä¾§ï¼‰
+                Row() {
+                  Column() {
+                    Stack() {
+                      Text(message.content)
+                        .fontSize(16)
+                        .fontColor(Color.White)
+                        .padding(10)
+                        .maxLines(10)
+                        .textAlign(TextAlign.Start)
+                    }
+                    .backgroundColor('#667eea')
+                    .borderRadius(15)
+                    
+                    Text(message.time)
+                      .fontSize(12)
+                      .fontColor('#999999')
+                      .margin({ top: 5 })
+                      .alignSelf(ItemAlign.End)
+                  }
+                  .alignItems(HorizontalAlign.End)
+                  .margin({ right: 10 })
+                  .constraintSize({ maxWidth: '70%' })
+                }
+                .width('100%')
+                .justifyContent(FlexAlign.End)
+                .margin({ bottom: 15 })
+              } else {
+                // å¯¹æ–¹å‘é€çš„æ¶ˆæ¯ï¼ˆå·¦ä¾§ï¼‰
+                Row() {
+                  // å¤´åƒ
+                  Text(this.contactAvatar)
+                    .fontSize(16)
+                    .fontColor(Color.White)
+                    .width(36)
+                    .height(36)
+                    .borderRadius(18)
+                    .backgroundColor('#667eea')
+                    .textAlign(TextAlign.Center)
+                    .margin({ right: 10 })
+                  
+                  Column() {
+                    Stack() {
+                      Text(message.content)
+                        .fontSize(16)
+                        .fontColor('#333333')
+                        .padding(10)
+                        .maxLines(10)
+                        .textAlign(TextAlign.Start)
+                    }
+                    .backgroundColor($r('sys.color.glass_material_outline_secondary'))
+                    .borderRadius(15)
+                    
+                    Text(message.time)
+                      .fontSize(12)
+                      .fontColor('#999999')
+                      .margin({ top: 5 })
+                      .alignSelf(ItemAlign.Start)
+                  }
+                  .alignItems(HorizontalAlign.Start)
+                  .constraintSize({ maxWidth: '70%' })
+                }
+                .width('100%')
+                .justifyContent(FlexAlign.Start)
+                .alignItems(VerticalAlign.Top)
+                .margin({ bottom: 15 })
+              }
+            })
+          }
+          .width('100%')
+          .padding({ left: 15, right: 15, top: 20 })
+        }
+        .layoutWeight(1)
+        .scrollBar(BarState.Off)
+        .backgroundColor('#f8f9fa')
+        
+        // è¾“å…¥æ¡†åŒºåŸŸ
+        Row() {
+          TextInput({ placeholder: 'è¾“å…¥æ¶ˆæ¯...', text: this.inputText })
+            .layoutWeight(1)
+            .height(40)
+            .fontSize(16)
+            .borderRadius(20)
+            .backgroundColor(Color.White)
+            .border({ width: 1, color: '#dddddd' })
+            .padding({ left: 15, right: 15 })
+            .onChange((value: string) => {
+              this.inputText = value;
+            })
+            .onSubmit(() => {
+              this.sendMessage();
+            })
+          
+          Button('å‘é€')
+            .fontSize(16)
+            .fontColor(Color.White)
+            .backgroundColor('#667eea')
+            .borderRadius(20)
+            .padding({ left: 20, right: 20, top: 10, bottom: 10 })
+            .margin({ left: 10 })
+            .onClick(() => {
+              this.sendMessage();
+            })
+        }
+        .width('100%')
+        .padding({ left: 15, right: 15, top: 15, bottom: 15 })
+        .backgroundColor(Color.White)
+        .border({ width: { top: 1 }, color: '#eeeeee' })
+      }
+      .layoutWeight(1)
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#f8f9fa')
+  }
+}ÀÔrD“¬@ohos.router¾../components/CommonComponents²../utils/HttpUtilsÔrE—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÃÙ hvigor_ignore_D:_devecostudio-windows-6.0.1.251_devecostudio-windows-6.0.1.251_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsAÃªoh-resolveÂEAÂÙOD:\project\lost-found-master\entry\src\main\ets\components\CommonComponents.etsAÃªoh-resolveÂEAÂÙCD:\project\lost-found-master\entry\src\main\ets\utils\HttpUtils.etsAÃªoh-resolveÂ“ÔrF–§version¤fileªsourceRoot§sources¥names¨mappings«ChatPage.js ‘¬ChatPage.etsÜ±’”    ”  –”   ” 	” ” ”! #”" $˜”   ” ”	 	” ” ” ”: :”; :˜”   ” ”	 	” ” ” ”. .”/ .’” 
+” 
+‘”  ’”: ”? $’”< !”? $’”8 ”: ’”7 #”9 %’”< !”ÌH -’”: ”ÌF +’” ”ÌB ÌG‘” Ìi’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” ” ’” ” ™” ” 
+” ” ” ” ”' #”) %”* &”” ” ” ” Ü ” ” 
+” ” ” ”&  ”' !”* $”+ %”1 +”3 -”Ì@ :”ÌA ÌE”ÌE ÌI”ÌJ ÌN”ÌK ÌOÜ ” ” 
+” ” ”! ”( "”) #”, &”- '”3 -”5 /”ÌD >”ÌE ÌI”ÌI ÌM”ÌL ÌP”ÌM ÌQ’” ”/ )” ” 
+” ” ” ”&  ”' !”* $”+ %”1 +”3 -”Ì@ :”ÌA ÌE™” ” ”  ” #” $”" *”$ ,”0 8”1 ÌC“” ” $” %‘”	 ’” ” –” ” ” 	” ” ”  ’”  ”  ’” "” "”” #”	 #”
+ #” #’” $” $Ü ” %” %” %” %” %” %”  %”' %!”ÌK %ÌE”ÌO %ÌI”ÌP %ÌJ”Ì] %ÌW”Ìm %Ìg”Ìq %Ìk”Ìr %Ìl”Ì} %Ìw”Ì %Ìy”Ì€ %Ìzœ” &” &” &” &”# &”, &&”- &'”0 &*”1 &+”4 &.”5 &/”6 &0›” '” '” '”  '9”$ '=”% '>”* 'ÌC”+ 'ÌD”3 'ÌL”4 'ÌM”5 'ÌNœ” )” )
+” )” )”  )”% )”( )"”, )&”7 )1”8 )2”< )6”> )8Ÿ” *” *” *” *”  *”+ *#”, *$”0 *(”1 *)”4 *,”5 *-”6 *.”9 *ÌA”; *ÌP”= *ÌR’” +
+” +–” ,” ,” ,” ,”  ,”) ,–” -” -”! -”$ -”% -”, - ›” .” .” .”" .”# .”- .!”. ."”1 .%”2 .&”: ..”; ./š” /” /”  /”# /”$ /”, / ”1 /%”5 /)”6 /*”ÌC /7’” 0” 0”” 1” 1	” 1
+” 1‘” 2‘” 2œ” 3” 3” 3” 3” 3”) 3!”+ 3#”6 3.”7 3/”> 36”? 37”Ì@ 38‘” 4‘”	 5”” 5” 5” 5” 5š” 6” 6” 6” 6” 6”% 6”' 6!”, 6&”- 6'”. 6(‘”	 7’” 8” 8’” :” :
+”” ;” ;” ;” ;’” <” <š” =” =” =” =” =”! =”" =”) =#”* =$”+ =%Ü ” >” >” >” >”* >$”+ >%”2 >,”4 >.”6 >0”: >4”< >6”ÌE >?”ÌG >ÌA”ÌM >ÌG”ÌO >ÌI”ÌX >ÌR”ÌZ >ÌT”Ì[ >ÌU”Ì\ >ÌV‘”	 ?”” ?” ?” ?” ?”” Ì@” Ì@” Ì@” Ì@‘”	 ÌA’” ÌB” ÌB’” ÌD” ÌD	”” ÌE”	 ÌE”
+ ÌE” ÌE™” ÌF” ÌF” ÌF” ÌF” ÌF” ÌF” ÌF”! ÌF”# ÌF›” ÌG” ÌG” ÌG” ÌG”  ÌG”! ÌG”* ÌG$”+ ÌG%”/ ÌG)”1 ÌG+”2 ÌG,™” ÌH” ÌH
+” ÌH” ÌH” ÌH” ÌH”  ÌH”! ÌH”* ÌH$’” ÌJ” ÌJ”” ÌK” ÌK” ÌK”  ÌK'š” ÌL” ÌL
+” ÌL” ÌL” ÌL” ÌL” ÌL” ÌL”' ÌL”) ÌL!”” ÌM” ÌM” ÌM”  ÌMÜ ” ÌN” ÌN” ÌN” ÌN” ÌN”  ÌN”! ÌN”3 ÌN+”4 ÌN,”; ÌN3”= ÌN5”? ÌN7”ÌC ÌN;”ÌE ÌN=”ÌN ÌNÌF”ÌP ÌNÌH”ÌV ÌNÌN”ÌX ÌNÌP”Ìa ÌNÌY”Ìc ÌNÌ[”Ìd ÌNÌ\”” ÌO” ÌO” ÌO” ÌO’” ÌP” ÌPš” ÌQ” ÌQ
+” ÌQ” ÌQ” ÌQ” ÌQ” ÌQ”* ÌQ$”+ ÌQ%”, ÌQ&’” ÌS” ÌS
+’” ÌT” ÌTš” ÌU” ÌU” ÌU” ÌU” ÌU”# ÌU”$ ÌU”+ ÌU#”> ÌU6”? ÌU7”” ÌV” ÌV”! ÌV”$ ÌV0”” ÌW
+” ÌW” ÌW”$ ÌW–” ÌX
+” ÌX” ÌX”" ÌX”# ÌX”0 ÌX&–” ÌY
+” ÌY”  ÌY”$ ÌY”% ÌY”0 ÌY&”” ÌZ
+” ÌZ” ÌZ” ÌZ’” Ì[	” Ì[
+” Ì]” Ì]” Ì]”! Ì]”' Ì]”0 Ì](”1 Ì])”5 Ì]-”6 Ì].”9 Ì]1”; Ì]3”ÌF Ì]>”ÌG Ì]?”ÌH Ì]Ì@›” Ì^” Ì^”! Ì^”$ Ì^>”( Ì^ÌB”) Ì^ÌC”. Ì^ÌH”/ Ì^ÌI”7 Ì^ÌQ”8 Ì^ÌR”9 Ì^ÌSœ” Ì`” Ì`” Ì`”  Ì`”$ Ì`”) Ì`!”, Ì`$”0 Ì`(”; Ì`3”< Ì`4”Ì@ Ì`8”ÌB Ì`:œ” Ìa
+” Ìa” Ìa” Ìa”  Ìa”) Ìa”+ Ìa!”6 Ìa,”7 Ìa-”; Ìa1”< Ìa2”= Ìa3’” Ìb
+”& Ìbœ” Ìc
+” Ìc”# Ìc”& Ìc”* Ìc ”+ Ìc!”3 Ìc)”4 Ìc*”: Ìc0”= Ìc3”> Ìc4”? Ìc5–” Ìd
+” Ìd”! Ìd”% Ìd”& Ìd”( ÌdÜ ” Ìe” Ìe” Ìe”% Ìe”& Ìe”/ Ìe#”0 Ìe$”1 Ìe%”3 Ìe'”6 Ìe*”ÌA Ìe5”ÌB Ìe6”ÌF Ìe:”ÌG Ìe;”ÌP ÌeÌD”ÌQ ÌeÌE‘” Ìf‘” Ìg	‘” Ìgœ” Ìh
+” Ìh” Ìh”! Ìh”" Ìh”+ Ìh!”- Ìh#”8 Ìh.”9 Ìh/”Ì@ Ìh6”ÌA Ìh7”ÌB Ìh8’” Ìi
+”, Ìi"‘” Ìj	‘” Ìk”” Ìk” Ìk” Ìk” Ìkš” Ìl” Ìl” Ìl” Ìl” Ìl”' Ìl”) Ìl!”. Ìl&”/ Ìl'”0 Ìl(’” Ìm”( Ìm ‘” Ìn‘”	 Ìo’” Ìp” Ìp‘” Ìr’” Ìs” Ìs
+–” Ìs” Ìs
+” Ìô” Ìô
+” Ìô” Ìô–” Ìs” Ìs
+” Ìõ” Ìõ” Ìõ”  Ìõ–” Ìs” Ìs
+” Ìö”" Ìö”# Ìö”, Ìö’” Ìt”0 Ìt"“” Ìu” Ìu”$ Ìu–” Ìv” Ìv” Ìv”# Ìv”$ Ìv”/ Ìv”” Ìw”  Ìw”" Ìw”& Ìw”” Ìx”" Ìx”$ Ìx”) Ìx•” Ìy” Ìy”  Ìy”# Ìy”% Ìy–” Ìz
+”" Ìz”# Ìz”' Ìz”) Ìz”* Ìz’” Ì{” Ì{	‘” Ì|–” Ìv”! Ìv”# Ìv”' Ìv”( Ìv”3 Ìv”” Ìw”$ Ìw”& Ìw”* Ìw”” Ìx”& Ìx”( Ìx”- Ìx•” Ìy”" Ìy”$ Ìy”' Ìy”) Ìy–”  Ìz
+”& Ìz”' Ìz”+ Ìz”- Ìz”. Ìz’” Ì{” Ì{	–” Ìv” Ìv” Ìv”# Ìv”$ Ìv”/ Ìv”” Ìw”  Ìw”" Ìw”& Ìw”” Ìx”" Ìx”$ Ìx”) Ìx’” Ì~” Ì~’” Ì” Ì’” Ì~” Ì~–” Ì” Ì” Ìò” Ìò”  Ìò”! Ìò’” Ì€” Ì€’” Ì” Ì’” Ì€” Ì€–” Ì” Ì” ÌÍ	” ÌÍ”  ÌÍ”! ÌÍ’” Ì€” Ì€˜” Ì” Ì” ÌÎ	” ÌÎ” ÌÎ”% ÌÎ”& ÌÎ”) ÌÎ’” Ì€” Ì€–” Ì” Ì” ÌÏ	”" ÌÏ”# ÌÏ”, ÌÏ"’” Ì‚
+” Ì‚–” Ì‚
+” Ì‚” ÌÊ” ÌÊ” ÌÊ” ÌÊÜ ” Ì‚
+” Ì‚” ÌË” ÌË” ÌË” ÌË”! ÌË”# ÌË”% ÌË”' ÌË”, ÌË$”. ÌË&”0 ÌË(”2 ÌË*”5 ÌË-”7 ÌË/”9 ÌË1”; ÌË3’” Ìƒ” Ìƒ–” Ì„” Ì„” Ì„”  Ì„”& Ì„ ”( Ì„"’”  Ì…”. Ì…’”  Ì†”# Ì†’”  Ì…”. Ì…–”  Ì†”# Ì†”$ Ì”) Ì”* Ì”0 Ì’”  Ì…”. Ì…˜”  Ì†”# Ì†”$ Ì”2 Ì”3 Ì ”< Ì)”= Ì*”Ì@ Ì-’”  Ì…”. Ì…š”  Ì†”# Ì†”$ ÌŸ”* ÌŸ”+ ÌŸ”- ÌŸ”3 ÌŸ ”5 ÌŸ"”7 ÌŸ$”9 ÌŸ&’”  Ì‡”& Ì‡˜”  Ì‡”& Ì‡”' Ì™”1 Ì™”2 Ì™”ÌA Ì™-”ÌB Ì™.”ÌE Ì™1š”  Ì‡”& Ì‡”' Ìš”- Ìš”. Ìš”0 Ìš”5 Ìš!”7 Ìš#”9 Ìš%”; Ìš'š”  Ì‡”& Ì‡”' Ì›”5 Ì›!”6 Ì›"”8 Ì›$”Ì@ Ì›,”ÌB Ì›.”ÌG Ì›3”ÌI Ì›5’”  Ìˆ”% Ìˆ–”  Ìˆ”% Ìˆ”& Ì”5 Ì$”6 Ì%”? Ì.–”  Ìˆ”% Ìˆ”& Ì‘”2 Ì‘!”3 Ì‘"”5 Ì‘$–”  Ì‰”$ Ì‰”, Ì‰”3 Ì‰"”4 Ì‰#”; Ì‰*–”  Ì‰”$ Ì‰”% ÌŠ”- ÌŠ!”. ÌŠ"”0 ÌŠ$˜”  Ì‰”$ Ì‰”% Ì‹”. Ì‹"”/ Ì‹#”4 Ì‹(”5 Ì‹)”: Ì‹.–”  Ì‰”$ Ì‰”% ÌŒ”, ÌŒ ”- ÌŒ!”/ ÌŒ#–”  Ì‰”$ Ì‰”% Ì”- Ì!”. Ì"”0 Ì$˜”  Ì‰”$ Ì‰”% Ì”. Ì"”/ Ì#”8 Ì,”9 Ì-”> Ì2’” Ì‰”  Ì‰’” Ìˆ”! Ìˆ–”  Ì“”$ Ì“”, Ì“”3 Ì“ ”4 Ì“!”8 Ì“%–”  Ì“”$ Ì“”% Ì””- Ì””. Ì” ”0 Ì”"–”  Ì“”$ Ì“”% Ì•”. Ì• ”/ Ì•!”8 Ì•*š”  Ì“”$ Ì“”% Ì–”+ Ì–”, Ì–”. Ì– ”1 Ì–#”3 Ì–%”4 Ì–&”6 Ì–(˜”  Ì“”$ Ì“”% Ì—”. Ì— ”/ Ì—!”8 Ì—*”9 Ì—+”< Ì—.’” Ì“”  Ì“’” Ì‡”" Ì‡’” Ì…”* Ì…’” Ì†” Ì†‘” Ì ‘” Ì ’”  Ì¡”. Ì¡’”  Ì¢”# Ì¢’”  Ì¡”. Ì¡–”  Ì¢”# Ì¢”$ ÌÃ”) ÌÃ”* ÌÃ”0 ÌÃ’”  Ì¡”. Ì¡˜”  Ì¢”# Ì¢”$ ÌÄ”2 ÌÄ”3 ÌÄ ”< ÌÄ)”= ÌÄ*”ÌB ÌÄ/’”  Ì¡”. Ì¡˜”  Ì¢”# Ì¢”$ ÌÅ”. ÌÅ”/ ÌÅ”< ÌÅ)”= ÌÅ*”Ì@ ÌÅ-’”  Ì¡”. Ì¡š”  Ì¢”# Ì¢”$ ÌÆ”* ÌÆ”+ ÌÆ”- ÌÆ”3 ÌÆ ”5 ÌÆ"”7 ÌÆ$”9 ÌÆ&’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”, Ì¤”0 Ì¤”1 Ì¤”> Ì¤)’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”% Ì¥”- Ì¥”. Ì¥”0 Ì¥ ’”  Ì£”% Ì£˜”  Ì¤”$ Ì¤”% Ì¦”. Ì¦”/ Ì¦”4 Ì¦$”5 Ì¦%”: Ì¦*’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”% Ì§”* Ì§”+ Ì§”- Ì§’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”% Ì¨”+ Ì¨”, Ì¨”. Ì¨’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”% Ì©”1 Ì©!”2 Ì©"”4 Ì©$’”  Ì£”% Ì£–”  Ì¤”$ Ì¤”% Ìª”4 Ìª$”5 Ìª%”> Ìª.’”  Ì£”% Ì£˜”  Ì¤”$ Ì¤”% Ì«”. Ì«”/ Ì«”8 Ì«(”9 Ì«)”? Ì«/’”  Ì£”% Ì£š”  Ì¤”$ Ì¤”% Ì¬”+ Ì¬”, Ì¬”. Ì¬”3 Ì¬#”5 Ì¬%”7 Ì¬'”9 Ì¬)’” Ì£”! Ì£’” Ì¤”  Ì¤’”  Ì®”& Ì®˜”  Ì®”& Ì®”' ÌÀ”1 ÌÀ”2 ÌÀ”ÌA ÌÀ-”ÌB ÌÀ.”ÌG ÌÀ3š”  Ì®”& Ì®”' ÌÁ”5 ÌÁ!”6 ÌÁ"”8 ÌÁ$”Ì@ ÌÁ,”ÌB ÌÁ.”ÌG ÌÁ3”ÌI ÌÁ5’”  Ì¯”% Ì¯””  Ì¯”% Ì¯”& Ì·”5 Ì·$–”  Ì¯”% Ì¯”& Ì¸”2 Ì¸!”3 Ì¸"”5 Ì¸$–”  Ì°”$ Ì°”, Ì°”3 Ì°"”4 Ì°#”; Ì°*–”  Ì°”$ Ì°”% Ì±”- Ì±!”. Ì±"”0 Ì±$–”  Ì°”$ Ì°”% Ì²”. Ì²"”/ Ì²#”8 Ì²,–”  Ì°”$ Ì°”% Ì³”, Ì³ ”- Ì³!”/ Ì³#–”  Ì°”$ Ì°”% Ì´”- Ì´!”. Ì´"”0 Ì´$˜”  Ì°”$ Ì°”% Ìµ”. Ìµ"”/ Ìµ#”8 Ìµ,”9 Ìµ-”> Ìµ2’” Ì°”  Ì°’” Ì¯”! Ì¯–”  Ìº”$ Ìº”, Ìº”3 Ìº ”4 Ìº!”8 Ìº%–”  Ìº”$ Ìº”% Ì»”- Ì»”. Ì» ”0 Ì»"–”  Ìº”$ Ìº”% Ì¼”. Ì¼ ”/ Ì¼!”8 Ì¼*š”  Ìº”$ Ìº”% Ì½”+ Ì½”, Ì½”. Ì½ ”1 Ì½#”3 Ì½%”4 Ì½&”6 Ì½(˜”  Ìº”$ Ìº”% Ì¾”. Ì¾ ”/ Ì¾!”8 Ì¾*”9 Ì¾+”> Ì¾0’” Ìº”  Ìº’” Ì®”" Ì®’” Ì¡”* Ì¡’” Ì¢” Ì¢‘” ÌÇ””/ Ìƒ”3 Ìƒ”4 Ìƒ”< Ìƒ!’” Ìƒ” Ìƒ’” Ì‚
+” Ì‚’” Ì€” Ì€’” Ì” Ì’” ÌÑ” ÌÑ’” ÌÒ” ÌÒ’” ÌÑ” ÌÑ–” ÌÒ” ÌÒ” Ìí	” Ìí” Ìí” Ìí’” ÌÑ” ÌÑÜ ” ÌÒ” ÌÒ” Ìî	” Ìî” Ìî” Ìî” Ìî”  Ìî”" Ìî”$ Ìî”) Ìî"”+ Ìî$”- Ìî&”/ Ìî(”2 Ìî+”4 Ìî-”6 Ìî/”8 Ìî1”> Ìî7”Ì@ Ìî9”ÌB Ìî;”ÌD Ìî=’” ÌÑ” ÌÑ˜” ÌÒ” ÌÒ” Ìï	” Ìï”  Ìï”% Ìï”& Ìï”+ Ìï$’” ÌÑ” ÌÑÜ ” ÌÒ” ÌÒ” Ìğ	” Ìğ” Ìğ” Ìğ” Ìğ”  Ìğ”" Ìğ”% Ìğ”' Ìğ ”( Ìğ!”* Ìğ#”, Ìğ%”1 Ìğ*”3 Ìğ,”< Ìğ5”> Ìğ7” ÌÓ
+” ÌÓ” ÌÓ” ÌÓ”* ÌÓ!”, ÌÓ#”5 ÌÓ,”7 ÌÓ.”; ÌÓ2”= ÌÓ4”ÌA ÌÓ8”ÌB ÌÓ9”ÌK ÌÓÌB”ÌM ÌÓÌD–” ÌÓ
+” ÌÓ” ÌÔ”" ÌÔ”# ÌÔ”$ ÌÔ–” ÌÓ
+” ÌÓ” ÌÕ” ÌÕ” ÌÕ” ÌÕ–” ÌÓ
+” ÌÓ” ÌÖ” ÌÖ” ÌÖ”! ÌÖ–” ÌÓ
+” ÌÓ” Ì×”" Ì×”# Ì×”% Ì×˜” ÌÓ
+” ÌÓ” ÌØ”% ÌØ”& ÌØ”+ ÌØ"”, ÌØ#”1 ÌØ(” ÌÓ
+” ÌÓ” ÌÙ” ÌÙ” ÌÙ” ÌÙ”$ ÌÙ”& ÌÙ”' ÌÙ”) ÌÙ ”. ÌÙ%”0 ÌÙ'”9 ÌÙ0”; ÌÙ2” ÌÓ
+” ÌÓ” ÌÚ” ÌÚ” ÌÚ”  ÌÚ”$ ÌÚ”& ÌÚ”( ÌÚ”* ÌÚ!”/ ÌÚ&”1 ÌÚ(”3 ÌÚ*”5 ÌÚ,™” ÌÓ
+” ÌÓ” ÌÛ” ÌÛ” ÌÛ”  ÌÛ”% ÌÛ$”' ÌÛ&”) ÌÛ(—” ÌÜ” ÌÜ” ÌÜ” ÌÜ”! ÌÜ”& ÌÜ$”' ÌÜ%’” Ìİ” Ìİ—” ÌÓ
+” ÌÓ” ÌŞ” ÌŞ” ÌŞ”" ÌŞ”$ ÌŞ–” Ìß” Ìß” Ìß”  Ìß”" Ìß ”# Ìß!’” Ìà” Ìà”” Ìâ
+” Ìâ”# Ìâ”' Ìâ–” Ìâ
+” Ìâ” Ìã” Ìã” Ìã” Ìã˜” Ìâ
+” Ìâ” Ìä” Ìä” Ìä”" Ìä”# Ìä”( Ìä"–” Ìâ
+” Ìâ” Ìå”" Ìå”# Ìå”, Ìå&–” Ìâ
+” Ìâ” Ìæ” Ìæ”  Ìæ”" ÌæÜ ” Ìâ
+” Ìâ” Ìç” Ìç” Ìç” Ìç”! Ìç”# Ìç”% Ìç”' Ìç!”, Ìç&”. Ìç(”0 Ìç*”2 Ìç,”5 Ìç/”7 Ìç1”9 Ìç3”; Ìç5”ÌA Ìç;”ÌC Ìç=”ÌE Ìç?”ÌG ÌçÌAš” Ìâ
+” Ìâ” Ìè” Ìè” Ìè” Ìè”  Ìè”" Ìè”$ Ìè”& Ìè —” Ìâ
+” Ìâ” Ìé” Ìé” Ìé” Ìé”  Ìé–” Ìê” Ìê” Ìê”  Ìê”" Ìê ”# Ìê!’” Ìë” Ìë’” Ìâ
+” Ìâ’” ÌÑ” ÌÑ’” ÌÒ” ÌÒ’” Ì~” Ì~’” Ì” Ì’” Ìs” Ìs
+‘” Ì÷ÔrG–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜº‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ‘”  ÍB ‘”  ÍC ‘”  ÍD ‘”  ÍE ‘”  ÍF ‘”  ÍG ‘”  ÍH ‘”  ÍI ‘”  ÍJ ‘”  ÍK ‘”  ÍL ‘”  ÍM ‘”  ÍN ‘”  ÍO ‘”  ÍP ‘”  ÍQ ‘”  ÍR ‘”  ÍS ‘”  ÍT ‘”  ÍU ‘”  ÍV ‘”  ÍW ‘”  ÍX ‘”  ÍY ‘”  ÍZ ‘”  Í[ ‘”  Í\ ‘”  Í] ‘”  Í^ ‘”  Í_ ‘”  Í` ‘”  Ía ‘”  Íb ‘”  Íc ‘”  Íd ‘”  Íe ‘”  Íf ‘”  Íg ‘”  Íh ‘”  Íi ‘”  Íj ‘”  Ík ‘”  Íl ‘”  Ím ‘”  Ín ‘”  Ío ‘”  Íp ‘”  Íq ‘”  Ír ‘”  Ís ‘”  Ít ‘”  Íu ‘”  Ív ‘”  Íw ‘”  Íx ‘”  Íy ‘”  Íz ‘”  Í{ ‘”  Í| ‘”  Í} ‘”  Í~ ‘”  Í ‘”  Í€ ‘”  Í ‘”  Í‚ ‘”  Íƒ ‘”  Í„ ‘”  Í… ‘”  Í† ‘”  Í‡ ‘”  Íˆ ‘”  Í‰ ‘”  ÍŠ ‘”  Í‹ ‘”  ÍŒ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í‘ ‘”  Í’ ‘”  Í“ ‘”  Í” ‘”  Í• ‘”  Í– ‘”  Í— ‘”  Í˜ ‘”  Í™ ‘”  Íš ‘”  Í› ‘”  Íœ ‘”  Í ‘”  Í ‘”  ÍŸ ‘”  Í  ‘”  Í¡ ‘”  Í¢ ‘”  Í£ ‘”  Í¤ ‘”  Í¥ ‘”  Í¦ ‘”  Í§ ‘”  Í¨ ‘”  Í© ‘”  Íª ‘”  Í« ‘”  Í¬ ‘”  Í­ ‘”  Í® ‘”  Í¯ ‘”  Í° ‘”  Í± ‘”  Í² ‘”  Í³ ‘”  Í´ ‘”  Íµ ‘”  Í¶ ‘”  Í· ‘”  Í¸ ‘”  Í¹ ÔrH’§missing¦pluginÃ¦genAbcÂÔ  ÔrI”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache“ÔrJ•¤type¥start£endªspecifiers¦source±ImportDeclarationÌÌ¯‘ÔrK”¤type¥start£end¥local¶ImportDefaultSpecifierÌ”ÌšÔrL”¤type¥start£end¤nameªIdentifierÌ”Ìš¦routerÔrM•¤type¥start£end¥value£raw§LiteralÌ Ì®¬@ohos.router®"@ohos.router"J±ImportDeclarationÌ±Ìì‘ÔrN•¤type¥start£end¨imported¥local¯ImportSpecifierÌºÌÃLªIdentifierÌºÌÃ©HeaderBarLªIdentifierÌºÌÃ©HeaderBarM§LiteralÌËÌë¾../components/CommonComponentsÙ "../components/CommonComponents"J±ImportDeclarationÌîÍ‘N¯ImportSpecifierÌ÷Í LªIdentifierÌ÷Í ©HttpUtilsLªIdentifierÌ÷Í ©HttpUtilsM§LiteralÍÍ²../utils/HttpUtils´"../utils/HttpUtils"
