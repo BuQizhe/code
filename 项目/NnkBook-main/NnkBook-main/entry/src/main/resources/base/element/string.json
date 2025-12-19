@@ -1,0 +1,22 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Nnk记账本"
+    },
+    {
+      "name": "file_specification",
+      "value": ".json"
+    }
+
+
+  ]
+}
