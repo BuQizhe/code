@@ -18,7 +18,11 @@
           "Children": [
             {
               "$type": "Bookmark",
+<<<<<<< HEAD
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+=======
+              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
+>>>>>>> 14fedb5a01a0114ce61abaa3d586833fcf7075a6
             },
             {
               "$type": "Document",
@@ -26,9 +30,15 @@
               "Title": "test.cpp",
               "DocumentMoniker": "D:\\code\\test\\test-12-5\\test.cpp",
               "RelativeDocumentMoniker": "test.cpp",
+<<<<<<< HEAD
               "ToolTip": "D:\\code\\test\\test-12-5\\test.cpp*",
               "RelativeToolTip": "test.cpp*",
               "ViewState": "AgIAAOkAAAAAAAAAAAAowOsAAAANAAAAAAAAAA==",
+=======
+              "ToolTip": "D:\\code\\test\\test-12-5\\test.cpp",
+              "RelativeToolTip": "test.cpp",
+              "ViewState": "AgIAAOUAAAAAAAAAAAAuwOsAAAAAAAAAAAAAAA==",
+>>>>>>> 14fedb5a01a0114ce61abaa3d586833fcf7075a6
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-12-05T03:08:20.658Z",
               "EditorCaption": ""

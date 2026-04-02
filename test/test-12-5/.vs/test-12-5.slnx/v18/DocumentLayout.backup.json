@@ -14,6 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
+<<<<<<< HEAD
           "SelectedChildIndex": 1,
           "Children": [
             {
@@ -21,14 +22,25 @@
               "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
             },
             {
+=======
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+>>>>>>> 14fedb5a01a0114ce61abaa3d586833fcf7075a6
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "test.cpp",
               "DocumentMoniker": "D:\\code\\test\\test-12-5\\test.cpp",
               "RelativeDocumentMoniker": "test.cpp",
+<<<<<<< HEAD
               "ToolTip": "D:\\code\\test\\test-12-5\\test.cpp",
               "RelativeToolTip": "test.cpp",
               "ViewState": "AgIAAOUAAAAAAAAAAAAuwOsAAAAAAAAAAAAAAA==",
+=======
+              "ToolTip": "D:\\code\\test\\test-12-5\\test.cpp*",
+              "RelativeToolTip": "test.cpp*",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAuwCsAAAAQAAAAAAAAAA==",
+>>>>>>> 14fedb5a01a0114ce61abaa3d586833fcf7075a6
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-12-05T03:08:20.658Z",
               "EditorCaption": ""
