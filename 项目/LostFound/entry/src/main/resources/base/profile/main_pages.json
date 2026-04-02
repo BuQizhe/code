@@ -1,9 +1,0 @@
-{
-  "src": [
-    "pages/LoginPage",
-    "pages/RegisterPage",
-    "pages/Index",
-    "pages/AddPage",
-    "pages/DetailPage"
-  ]
-}
