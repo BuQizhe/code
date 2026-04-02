@@ -1,0 +1,173 @@
+//{
+//  "module": {
+//    "name": "entry",
+//    "type": "entry",
+//    "description": "$string:module_desc",
+//    "mainElement": "EntryAbility",
+//    "deviceTypes":  ["phone"],
+//    "deliveryWithInstall": true,
+//    "installationFree": false,
+//    "pages": "$profile:main_pages",
+//    "abilities": [
+//    {
+//        "name": "EntryAbility",
+//        "srcEntry": "./ets/entryability/EntryAbility.ets",
+//        "description": "$string:EntryAbility_desc",
+//          "icon": "$media:layered_image",
+//        "label": "$string:EntryAbility_label",
+//        "startWindowIcon" : "$media:startIcon",
+//        "startWindowBackground" : "$color:start_window_background"
+//          ,
+//        "exported": true
+//          ,
+//        "skills": [
+//          {
+//            "entities": [
+//              "entity.system.home"
+//            ],
+//            "actions": [
+//              "ohos.want.action.home"
+//            ]
+//          }
+//        ]
+//      }],"extensionAbilities": [
+//      {
+//        "name": "EntryBackupAbility",
+//        "srcEntry": "./ets/entrybackupability/EntryBackupAbility.ets",
+//        "type": "backup",
+//        "exported": false,
+//        "metadata": [
+//          {
+//            "name": "ohos.extension.backup",
+//            "resource": "$profile:backup_config"
+//          }
+//        ],
+//      }
+//    ]
+//  }
+//}
+
+//{
+//  "module": {
+//    "name": "entry",
+//    "type": "entry",
+//    "description": "C++版校园课程查询App",
+//    "mainAbility": "entry.ability.EntryAbility",
+//    "deviceTypes": ["phone", "tablet"],
+//    "deliveryWithInstall": true,
+//    "installationFree": false,
+//    "pages": [
+//      "pages/CourseHome",
+//      "pages/CourseList",
+//      "pages/CourseDetail",
+//      "pages/SearchPage",
+//      "pages/MinePage"
+//    ],
+//    "abilities": [
+//      {
+//        "name": "entry.ability.EntryAbility",
+//        "type": "pageAbility",
+//        "visible": true,
+//        "launchType": "standard",
+//        "skills": [
+//          {
+//            "entities": ["entity.system.home"],
+//            "actions": ["action.system.home"]
+//          }
+//        ],
+//        "nativeLibraryName": "entry" // 关联C++共享库
+//      }
+//    ],
+//    "reqPermissions": [
+//      {
+//        "name": "ohos.permission.INTERNET",
+//        "reason": "需要网络权限获取课程数据",
+//        "usedScene": {
+//          "ability": ["entry.ability.EntryAbility"],
+//          "when": "always"
+//        }
+//      },
+//      {
+//        "name": "ohos.permission.WRITE_USER_STORAGE",
+//        "reason": "需要存储权限缓存课程数据",
+//        "usedScene": {
+//          "ability": ["entry.ability.EntryAbility"],
+//          "when": "always"
+//        }
+//      }
+//    ],
+//    "apiVersion": {
+//      "compatible": 10,
+//      "target": 10,
+//      "releaseType": "Release"
+//    }
+//  }
+//}
+
+
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "鸿蒙C++版校园课程查询系统，满足以赛代考3个以上课程知识模块要求",
+    "mainAbility": "entry.ability.EntryAbility",
+    "deviceTypes": ["phone", "tablet"], // 适配赛事要求的分布式设备
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    // 页面注册（与项目ETS页面路径完全一致，赛事必查）
+    "pages": [
+      "pages/Index",
+      "pages/CourseHome",
+      "pages/CourseList",
+      "pages/CourseDetail",
+      "pages/SearchPage",
+      "pages/MinePage"
+    ],
+    "abilities": [
+      {
+        "name": "entry.ability.EntryAbility",
+        "type": "pageAbility",
+        "visible": true,
+        "launchType": "standard",
+        "skills": [
+          {
+            "entities": ["entity.system.home"],
+            "actions": ["action.system.home"]
+          }
+        ],
+        "nativeLibraryName": "entry" // 关联C++共享库，赛事C++开发核心配置
+      }
+    ],
+    // 权限申请（符合赛事合规要求，仅申请核心必需权限）
+    "reqPermissions": [
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "需要网络权限同步校园课程数据，支撑核心功能",
+        "usedScene": {
+          "ability": ["entry.ability.EntryAbility"],
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.WRITE_USER_STORAGE",
+        "reason": "需要存储权限缓存课程数据和用户偏好设置，确保离线可用",
+        "usedScene": {
+          "ability": ["entry.ability.EntryAbility"],
+          "when": "always"
+        }
+      }
+    ],
+    // API版本与赛事要求一致（HarmonyOS 6.0+，API 10）
+    "apiVersion": {
+      "compatible": 10,
+      "target": 10,
+      "releaseType": "Release"
+    },
+    // 资源配置（确保资源目录识别正常，赛事UI规范要求）
+    "resources": {
+      "base": "src/main/resources/base",
+      "media": "src/main/resources/media",
+      "layout": "src/main/resources/layout"
+    }
+  }
+}
