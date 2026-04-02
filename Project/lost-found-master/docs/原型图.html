@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区失物招领APP原型图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            margin: 20px auto;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .screen {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .back-btn, .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .bottom-nav {
+            display: flex;
+            background: white;
+            border-top: 1px solid #eee;
+            height: 60px;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-text {
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #999;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-searching {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-found {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filter-tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .message-preview {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .unread-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .community-selector {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .avatar-upload {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            border: 2px dashed #ddd;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .image-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .comment-item {
+            display: flex;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            margin-bottom: 4px;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 启动页 -->
+    <div class="phone-container">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>●●●●●</span>
+            <span>100%</span>
+        </div>
+
+        <!-- 登录页面 -->
+        <div class="screen active" id="login-screen">
+            <div class="header">
+                <h1>社区失物招领</h1>
+            </div>
+            <div class="content">
+                <div style="text-align: center; margin: 40px 0;">
+                    <div style="font-size: 64px; color: #667eea;">📱</div>
+                    <h2 style="margin: 20px 0; color: #333;">欢迎使用</h2>
+                    <p style="color: #666;">连接社区，寻找失物</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>用户名/手机号</label>
+                    <input type="text" placeholder="请输入用户名或手机号">
+                </div>
+                
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" placeholder="请输入密码">
+                </div>
+                
+                <button class="btn" onclick="showScreen('main-screen')">登录</button>
+                <button class="btn btn-secondary" onclick="showScreen('register-screen')">注册账号</button>
+            </div>
+        </div>
+
+        <!-- 注册页面 -->
+        <div class="screen" id="register-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('login-screen')">←</button>
+                <h1>用户注册</h1>
+                <span></span>
+            </div>
+            <div class="content">
+                <div class="avatar-upload">
+                    <span style="color: #999;">📷</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" placeholder="请输入用户名">
+                </div>
+                
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="tel" placeholder="请输入手机号">
+                </div>
+                
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" placeholder="请输入密码">
+                </div>
+                
+                <div class="form-group">
+                    <label>确认密码</label>
+                    <input type="password" placeholder="请再次输入密码">
+                </div>
+                
+                <button class="btn">注册</button>
+            </div>
+        </div>
+
+        <!-- 主页面 -->
+        <div class="screen" id="main-screen">
+            <div class="header">
+                <h1>失物招领</h1>
+                <button class="menu-btn" onclick="showScreen('profile-screen')">👤</button>
+            </div>
+            <div class="content">
+                <!-- 社区选择器 -->
+                <div class="community-selector" onclick="showScreen('community-select-screen')">
+                    <div>
+                        <div style="font-weight: 500;">当前社区</div>
+                        <div style="font-size: 14px; color: #666;">北京理工大学</div>
+                    </div>
+                    <span>▼</span>
+                </div>
+
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索物品名称、描述...">
+                    <button class="search-btn">🔍</button>
+                </div>
+
+                <!-- 筛选标签 -->
+                <div class="filter-tabs">
+                    <div class="filter-tab active">全部</div>
+                    <div class="filter-tab">寻物</div>
+                    <div class="filter-tab">寻主</div>
+                </div>
+
+                <!-- 求助列表 -->
+                <div class="card">
+                    <div style="display: flex;">
+                        <div class="item-image">📱</div>
+                        <div class="item-info">
+                            <div class="item-title">苹果手机 iPhone 14</div>
+                            <div class="item-meta">📍 图书馆三楼</div>
+                            <div class="item-meta">⏰ 2小时前</div>
+                            <div style="margin-top: 8px;">
+                                <span class="status-tag status-searching">寻主中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex;">
+                        <div class="item-image">🎒</div>
+                        <div class="item-info">
+                            <div class="item-title">黑色双肩背包</div>
+                            <div class="item-meta">📍 体育馆门口</div>
+                            <div class="item-meta">⏰ 5小时前</div>
+                            <div style="margin-top: 8px;">
+                                <span class="status-tag status-searching">寻物中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex;">
+                        <div class="item-image">🔑</div>
+                        <div class="item-info">
+                            <div class="item-title">宿舍钥匙一串</div>
+                            <div class="item-meta">📍 食堂二楼</div>
+                            <div class="item-meta">⏰ 1天前</div>
+                            <div style="margin-top: 8px;">
+                                <span class="status-tag status-found">已找到</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 浮动发布按钮 -->
+            <button class="fab" onclick="showScreen('publish-screen')">+</button>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+                <div class="nav-item active">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-text">首页</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('community-screen')">
+                    <div class="nav-icon">🏘️</div>
+                    <div class="nav-text">社区</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('message-screen')">
+                    <div class="nav-icon">💬</div>
+                    <div class="nav-text">消息</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('profile-screen')">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">我的</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区选择页面 -->
+        <div class="screen" id="community-select-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('main-screen')">←</button>
+                <h1>选择社区</h1>
+                <button class="menu-btn" onclick="showScreen('community-create-screen')">+</button>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div style="font-weight: 500;">北京理工大学</div>
+                            <div style="font-size: 14px; color: #666;">校园 · 1250人</div>
+                        </div>
+                        <span style="color: #667eea;">✓</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div style="font-weight: 500;">中关村软件园</div>
+                            <div style="font-size: 14px; color: #666;">公司 · 890人</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div style="font-weight: 500;">万科城市花园</div>
+                            <div style="font-size: 14px; color: #666;">小区 · 456人</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区创建页面 -->
+        <div class="screen" id="community-create-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('community-select-screen')">←</button>
+                <h1>创建社区</h1>
+                <span></span>
+            </div>
+            <div class="content">
+                <div class="form-group">
+                    <label>社区名称</label>
+                    <input type="text" placeholder="请输入社区名称">
+                </div>
+                
+                <div class="form-group">
+                    <label>社区类型</label>
+                    <select>
+                        <option>请选择社区类型</option>
+                        <option>校园</option>
+                        <option>小区</option>
+                        <option>公司</option>
+                        <option>车站</option>
+                        <option>机场</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>详细地址</label>
+                    <textarea placeholder="请输入详细地址" rows="3"></textarea>
+                </div>
+                
+                <button class="btn">创建社区</button>
+            </div>
+        </div>
+
+        <!-- 发布页面 -->
+        <div class="screen" id="publish-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('main-screen')">←</button>
+                <h1>发布求助</h1>
+                <span></span>
+            </div>
+            <div class="content">
+                <div class="filter-tabs" style="margin-bottom: 20px;">
+                    <div class="filter-tab active">寻物启事</div>
+                    <div class="filter-tab">失物招领</div>
+                </div>
+
+                <div class="form-group">
+                    <label>物品名称</label>
+                    <input type="text" placeholder="请输入物品名称">
+                </div>
+
+                <div class="form-group">
+                    <label>物品描述</label>
+                    <textarea placeholder="请详细描述物品特征、颜色、大小等" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>上传图片</label>
+                    <div class="image-upload-area">
+                        <div style="color: #999; font-size: 48px;">📷</div>
+                        <div style="margin-top: 10px; color: #666;">点击上传图片</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>丢失时间</label>
+                    <input type="datetime-local">
+                </div>
+
+                <div class="form-group">
+                    <label>丢失地点</label>
+                    <input type="text" placeholder="请输入丢失地点">
+                </div>
+
+                <div class="form-group">
+                    <label>联系方式</label>
+                    <input type="text" placeholder="请输入联系方式（可选）">
+                </div>
+
+                <button class="btn">发布求助</button>
+            </div>
+        </div>
+
+        <!-- 物品详情页面 -->
+        <div class="screen" id="detail-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('main-screen')">←</button>
+                <h1>物品详情</h1>
+                <span></span>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px; margin-bottom: 10px;">📱</div>
+                        <h2>苹果手机 iPhone 14</h2>
+                        <span class="status-tag status-searching">寻主中</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>物品描述：</strong><br>
+                        黑色iPhone 14，128GB存储，有透明手机壳，屏幕有轻微划痕
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>发现地点：</strong> 图书馆三楼阅览室
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>发现时间：</strong> 2024-06-16 14:30
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>暂存地点：</strong> 图书馆服务台
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>发布者：</strong> 张同学
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn" style="flex: 1;">认领物品</button>
+                    <button class="btn btn-secondary" onclick="showScreen('chat-screen')">私信</button>
+                </div>
+
+                <!-- 评论区 -->
+                <div style="border-top: 1px solid #eee; padding-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">评论区</h3>
+                    
+                    <div class="comment-item">
+                        <div class="comment-avatar">李</div>
+                        <div class="comment-content">
+                            <div class="comment-author">李同学</div>
+                            <div class="comment-text">这个手机是在哪个桌子发现的？我昨天在那里学习过</div>
+                            <div class="comment-time">2小时前</div>
+                        </div>
+                    </div>
+
+                    <div class="comment-item">
+                        <div class="comment-avatar">王</div>
+                        <div class="comment-content">
+                            <div class="comment-author">王同学</div>
+                            <div class="comment-text">手机有没有贴膜？我丢的那个没有贴膜</div>
+                            <div class="comment-time">1小时前</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <input type="text" placeholder="写评论..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px;">
+                        <button class="btn" style="width: auto; padding: 10px 20px;">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 消息页面 -->
+        <div class="screen" id="message-screen">
+            <div class="header">
+                <h1>消息</h1>
+            </div>
+            <div class="content" style="padding: 0;">
+                <div class="filter-tabs" style="margin: 20px; margin-bottom: 0;">
+                    <div class="filter-tab active">全部</div>
+                    <div class="filter-tab">评论</div>
+                    <div class="filter-tab">私信</div>
+                </div>
+
+                <div class="message-item">
+                    <div class="message-avatar">李</div>
+                    <div class="message-content">
+                        <div class="message-title">李同学 评论了你的求助</div>
+                        <div class="message-preview">这个手机是在哪个桌子发现的？</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="message-time">2小时前</div>
+                        <span class="unread-badge">1</span>
+                    </div>
+                </div>
+
+                <div class="message-item">
+                    <div class="message-avatar">王</div>
+                    <div class="message-content">
+                        <div class="message-title">王同学</div>
+                        <div class="message-preview">你好，我想问一下关于那个手机...</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="message-time">3小时前</div>
+                    </div>
+                </div>
+
+                <div class="message-item">
+                    <div class="message-avatar">🔔</div>
+                    <div class="message-content">
+                        <div class="message-title">系统通知</div>
+                        <div class="message-preview">你的求助"黑色双肩背包"有新的认领申请</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="message-time">昨天</div>
+                        <span class="unread-badge">1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+                <div class="nav-item" onclick="showScreen('main-screen')">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-text">首页</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('community-screen')">
+                    <div class="nav-icon">🏘️</div>
+                    <div class="nav-text">社区</div>
+                </div>
+                <div class="nav-item active">
+                    <div class="nav-icon">💬</div>
+                    <div class="nav-text">消息</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('profile-screen')">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">我的</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 私信聊天页面 -->
+        <div class="screen" id="chat-screen">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('message-screen')">←</button>
+                <h1>王同学</h1>
+                <span></span>
+            </div>
+            <div class="content">
+                <div style="display: flex; flex-direction: column; height: 100%;">
+                    <div style="flex: 1; overflow-y: auto;">
+                        <div style="display: flex; margin-bottom: 15px;">
+                            <div class="comment-avatar">王</div>
+                            <div style="margin-left: 10px; max-width: 70%;">
+                                <div style="background: #f0f0f0; padding: 10px; border-radius: 15px; border-bottom-left-radius: 5px;">
+                                    你好，我想问一下关于那个iPhone的具体情况
+                                </div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">15:30</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                            <div style="margin-right: 10px; max-width: 70%; text-align: right;">
+                                <div style="background: #667eea; color: white; padding: 10px; border-radius: 15px; border-bottom-right-radius: 5px;">
+                                    你好，是黑色的iPhone 14，有透明手机壳
+                                </div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">15:32</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; margin-bottom: 15px;">
+                            <div class="comment-avatar">王</div>
+                            <div style="margin-left: 10px; max-width: 70%;">
+                                <div style="background: #f0f0f0; padding: 10px; border-radius: 15px; border-bottom-left-radius: 5px;">
+                                    手机有没有贴膜？屏幕是什么样的？
+                                </div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">15:35</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; padding: 15px 0; border-top: 1px solid #eee;">
+                        <input type="text" placeholder="输入消息..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px;">
+                        <button class="btn" style="width: auto; padding: 10px 20px;">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区管理页面 -->
+        <div class="screen" id="community-screen">
+            <div class="header">
+                <h1>社区管理</h1>
+                <button class="menu-btn" onclick="showScreen('community-create-screen')">+</button>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div style="font-weight: 500;">我加入的社区</div>
+                            <div style="font-size: 14px; color: #666;">3个社区</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 500;">北京理工大学</div>
+                            <div style="font-size: 14px; color: #666;">校园 · 1250人 · 管理员</div>
+                        </div>
+                        <button class="btn" style="width: auto; padding: 8px 16px; font-size: 14px;">管理</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 500;">中关村软件园</div>
+                            <div style="font-size: 14px; color: #666;">公司 · 890人</div>
+                        </div>
+                        <span style="color: #28a745;">✓ 已加入</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 500;">万科城市花园</div>
+                            <div style="font-size: 14px; color: #666;">小区 · 456人</div>
+                        </div>
+                        <span style="color: #28a745;">✓ 已加入</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+                <div class="nav-item" onclick="showScreen('main-screen')">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-text">首页</div>
+                </div>
+                <div class="nav-item active">
+                    <div class="nav-icon">🏘️</div>
+                    <div class="nav-text">社区</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('message-screen')">
+                    <div class="nav-icon">💬</div>
+                    <div class="nav-text">消息</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('profile-screen')">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">我的</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人资料页面 -->
+        <div class="screen" id="profile-screen">
+            <div class="header">
+                <h1>个人中心</h1>
+            </div>
+            <div class="content">
+                <div class="card" style="text-align: center;">
+                    <div class="avatar-upload" style="margin: 0 auto 15px;">
+                        <span style="font-size: 32px;">👤</span>
+                    </div>
+                    <h3>张同学</h3>
+                    <p style="color: #666; margin-top: 5px;">手机号：138****5678</p>
+                    <p style="color: #666;">注册时间：2024-01-15</p>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span>我发布的求助</span>
+                        <span style="color: #667eea;">查看全部 ></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; text-align: center;">
+                        <div>
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;">3</div>
+                            <div style="font-size: 14px; color: #666;">寻物中</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: bold; color: #28a745;">5</div>
+                            <div style="font-size: 14px; color: #666;">已找到</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: bold; color: #ffc107;">2</div>
+                            <div style="font-size: 14px; color: #666;">帮助他人</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid #eee; cursor: pointer;">
+                        <span>📝 编辑个人信息</span>
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid #eee; cursor: pointer;">
+                        <span>🏘️ 我的社区</span>
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid #eee; cursor: pointer;">
+                        <span>⚙️ 设置</span>
+                    </div>
+                    <div style="padding: 10px 0; cursor: pointer;">
+                        <span>📞 帮助与反馈</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary">退出登录</button>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+                <div class="nav-item" onclick="showScreen('main-screen')">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-text">首页</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('community-screen')">
+                    <div class="nav-icon">🏘️</div>
+                    <div class="nav-text">社区</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('message-screen')">
+                    <div class="nav-icon">💬</div>
+                    <div class="nav-text">消息</div>
+                </div>
+                <div class="nav-item active">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">我的</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // 隐藏所有屏幕
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // 显示目标屏幕
+            document.getElementById(screenId).classList.add('active');
+            
+            // 更新底部导航激活状态
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+
+        // 为底部导航添加点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
