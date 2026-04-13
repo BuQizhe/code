@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: chatroom-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: java_chatroom
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./chatroom.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - chatroom-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  app:
+    build: .
+    container_name: chatroom-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/java_chatroom?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - chatroom-network
+
+volumes:
+  mysql-data:
+
+networks:
+  chatroom-network:
+    driver: bridge

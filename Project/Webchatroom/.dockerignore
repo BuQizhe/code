@@ -1,0 +1,42 @@
+# 编译文件
+target/
+*.class
+*.jar
+*.war
+
+# IDE配置
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# 日志
+*.log
+logs/
+
+# 图片上传目录（本地）
+uploads/
+
+# 配置文件（敏感信息）
+application.yml
+application-dev.yml
+application-prod.yml
+
+# 文档
+*.md
+README.md
+
+# 临时文件
+*.tmp
+*.temp
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd

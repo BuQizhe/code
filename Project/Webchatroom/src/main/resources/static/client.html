@@ -2,103 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>聊天室 - 主界面</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; font-family: 'Microsoft YaHei', Arial, sans-serif; }
-        body {
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* 夜间模式样式 */
-        body.dark-mode {
-            background-color: #1a1a1a;
-        }
-
-        body.dark-mode .nav {
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #333;
-        }
-
-        body.dark-mode .left {
-            background-color: #1e1e1e;
-        }
-
-        body.dark-mode .left .user {
-            border-bottom-color: #333;
-        }
-
-        body.dark-mode .left .search input,
-        body.dark-mode .left .search button {
-            background-color: #2d2d2d;
-            color: #eee;
-        }
-
-        body.dark-mode .right .title {
-            background-color: #2d2d2d;
-            color: #eee;
-            border-bottom-color: #444;
-        }
-
-        body.dark-mode .right .message-show {
-            background-color: #2d2d2d;
-        }
-
-        body.dark-mode .message .box p {
-            background-color: #3d3d3d;
-            color: #eee;
-        }
-
-        body.dark-mode .message-right .box p {
-            background-color: #1e88e5;
-        }
-
-        body.dark-mode .input-area {
-            background-color: #2d2d2d;
-            border-top-color: #444;
-        }
-
-        body.dark-mode .message-input textarea {
-            background-color: #3d3d3d;
-            color: #eee;
-            border-color: #555;
-        }
-
-        body.dark-mode .emoji-bar {
-            border-bottom-color: #444;
-        }
-
-        body.dark-mode .ctrl button {
-            background-color: #1e88e5;
-        }
-
-        body.dark-mode .session-item.sticky {
-            background-color: #2a2a2a;
-        }
-
-        body.dark-mode .friend-request-card {
-            background-color: #2d2d2d;
-            color: #eee;
-        }
-
-        body.dark-mode .friend-request-name {
-            color: #eee;
-        }
-
-        body.dark-mode .friend-request-reason {
-            background-color: #3d3d3d;
-            color: #aaa;
-        }
-
-        body.dark-mode .friend-request-footer button {
-            background-color: #2d2d2d;
-            color: #eee;
-            border-top-color: #444;
-        }
-
-        body.dark-mode .friend-request-footer button:first-child {
-            border-right-color: #444;
-        }
 
         .nav {
             width: 100%;
@@ -131,6 +39,7 @@
             padding: 5px 10px;
             border-radius: 20px;
             transition: background-color 0.2s;
+            color: white;
         }
 
         .theme-btn:hover {
@@ -175,10 +84,6 @@
             background-color: #f0f0f0;
         }
 
-        body.dark-mode .container {
-            background-color: #1a1a1a;
-        }
-
         .main {
             width: 1200px;
             height: 750px;
@@ -186,10 +91,6 @@
             border-radius: 8px;
             display: flex;
             box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        }
-
-        body.dark-mode .main {
-            background-color: #2d2d2d;
         }
 
         /* 左侧区域 */
@@ -333,7 +234,6 @@
             flex-shrink: 0;
         }
 
-        /* 群聊头像 */
         .session-avatar.group {
             background: linear-gradient(135deg, #4caf50, #2e7d32);
         }
@@ -469,13 +369,6 @@
             position: relative;
         }
 
-        /* 正在输入状态 */
-        .title-typing {
-            font-size: 14px;
-            color: #999;
-        }
-
-        /* 搜索消息区域 */
         .search-message-area {
             padding: 10px;
             background-color: #f9f9f9;
@@ -483,13 +376,8 @@
             display: none;
         }
 
-        body.dark-mode .search-message-area {
-            background-color: #2d2d2d;
-            border-bottom-color: #444;
-        }
-
         .search-message-area input {
-            width: 80%;
+            width: 70%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -514,14 +402,6 @@
 
         .search-result-item:hover {
             background-color: #f0f0f0;
-        }
-
-        body.dark-mode .search-result-item {
-            border-bottom-color: #444;
-        }
-
-        body.dark-mode .search-result-item:hover {
-            background-color: #3d3d3d;
         }
 
         .right .message-show {
@@ -689,10 +569,6 @@
             padding: 0 15px;
         }
 
-        #searchMsgBtn:hover {
-            background-color: #f57c00;
-        }
-
         /* 滚动条样式 */
         ::-webkit-scrollbar {
             width: 6px;
@@ -734,11 +610,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        body.dark-mode .emoji-panel {
-            background-color: #2d2d2d;
-            border-color: #444;
-        }
-
         .emoji-panel .emoji {
             font-size: 24px;
             cursor: pointer;
@@ -748,10 +619,6 @@
 
         .emoji-panel .emoji:hover {
             background-color: #f0f0f0;
-        }
-
-        body.dark-mode .emoji-panel .emoji:hover {
-            background-color: #3d3d3d;
         }
 
         .emoji-btn {
@@ -857,10 +724,6 @@
             color: #999;
         }
 
-        .friend-request-footer button:active {
-            background-color: #f5f5f5;
-        }
-
         /* 创建群聊弹窗 */
         .create-group-modal {
             position: fixed;
@@ -883,20 +746,12 @@
             animation: fadeInUp 0.3s ease;
         }
 
-        body.dark-mode .create-group-card {
-            background-color: #2d2d2d;
-        }
-
         .create-group-header {
             padding: 20px;
             text-align: center;
             font-size: 18px;
             font-weight: bold;
             border-bottom: 1px solid #eee;
-        }
-
-        body.dark-mode .create-group-header {
-            border-bottom-color: #444;
         }
 
         .create-group-body {
@@ -912,21 +767,11 @@
             font-size: 14px;
         }
 
-        body.dark-mode .create-group-body input {
-            background-color: #3d3d3d;
-            color: #eee;
-            border-color: #555;
-        }
-
         .friend-select-list {
             max-height: 200px;
             overflow-y: auto;
             border: 1px solid #eee;
             border-radius: 8px;
-        }
-
-        body.dark-mode .friend-select-list {
-            border-color: #444;
         }
 
         .friend-select-item {
@@ -937,16 +782,8 @@
             border-bottom: 1px solid #eee;
         }
 
-        body.dark-mode .friend-select-item {
-            border-bottom-color: #444;
-        }
-
         .friend-select-item:hover {
             background-color: #f5f5f5;
-        }
-
-        body.dark-mode .friend-select-item:hover {
-            background-color: #3d3d3d;
         }
 
         .friend-select-item input {
@@ -958,10 +795,6 @@
         .create-group-footer {
             display: flex;
             border-top: 1px solid #eee;
-        }
-
-        body.dark-mode .create-group-footer {
-            border-top-color: #444;
         }
 
         .create-group-footer button {
@@ -981,9 +814,382 @@
             background-color: #f5f5f5;
         }
 
+        /* ========== 手机端适配 ========== */
+        @media (max-width: 768px) {
+            .nav {
+                height: 50px;
+                padding: 0 12px;
+            }
+
+            .nav-title {
+                font-size: 16px;
+            }
+
+            .theme-btn, .create-group-btn {
+                font-size: 16px;
+                padding: 4px 8px;
+            }
+
+            .logout-btn {
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+
+            .main {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                flex-direction: column;
+            }
+
+            .left {
+                width: 100%;
+                height: 45%;
+                border-radius: 0;
+            }
+
+            .right {
+                width: 100%;
+                height: 55%;
+            }
+
+            .left .user {
+                height: 60px;
+                padding: 0 12px;
+            }
+
+            .left .user .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+                margin-right: 10px;
+            }
+
+            .left .user .user-name {
+                font-size: 14px;
+            }
+
+            .left .user .user-id {
+                font-size: 10px;
+            }
+
+            .left .search {
+                height: 45px;
+                padding: 0 12px;
+            }
+
+            .left .search input {
+                height: 32px;
+                width: 140px;
+                font-size: 12px;
+            }
+
+            .left .search button {
+                height: 32px;
+                width: 40px;
+                font-size: 12px;
+            }
+
+            .left .tab {
+                height: 40px;
+            }
+
+            .left .tab div {
+                line-height: 40px;
+                font-size: 12px;
+            }
+
+            .session-item {
+                padding: 8px 12px;
+            }
+
+            .session-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+                margin-right: 10px;
+            }
+
+            .session-name {
+                font-size: 14px;
+            }
+
+            .session-preview {
+                font-size: 11px;
+            }
+
+            .friend-item {
+                padding: 10px 12px;
+            }
+
+            .friend-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+                margin-right: 10px;
+            }
+
+            .friend-name {
+                font-size: 14px;
+            }
+
+            .right .title {
+                height: 45px;
+                line-height: 45px;
+                font-size: 16px;
+            }
+
+            .message .box {
+                max-width: 85%;
+            }
+
+            .message .box p {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .message .box h4 {
+                font-size: 11px;
+            }
+
+            .image-message {
+                max-width: 150px;
+                max-height: 150px;
+            }
+
+            .emoji {
+                font-size: 18px;
+                padding: 2px 6px;
+            }
+
+            .message-input textarea {
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .ctrl button {
+                width: 70px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            #imageBtn, #searchMsgBtn {
+                width: auto;
+                padding: 0 12px;
+            }
+
+            .emoji-panel {
+                width: 240px;
+                bottom: 100px;
+                right: 10px;
+            }
+
+            .emoji-panel .emoji {
+                font-size: 20px;
+                padding: 4px;
+            }
+
+            .friend-request-card {
+                width: 280px;
+            }
+
+            .friend-request-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .friend-request-name {
+                font-size: 16px;
+            }
+
+            .create-group-card {
+                width: 300px;
+            }
+        }
+
+        /* 小手机适配 */
+        @media (max-width: 480px) {
+            .left .search input {
+                width: 120px;
+            }
+
+            .session-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+                margin-right: 8px;
+            }
+
+            .session-name {
+                font-size: 13px;
+            }
+
+            .session-preview {
+                font-size: 10px;
+            }
+
+            .ctrl button {
+                width: 60px;
+                font-size: 11px;
+            }
+        }
+
+        /* 夜间模式 */
+        body.dark-mode {
+            background-color: #1a1a1a;
+        }
+
+        body.dark-mode .nav {
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .left {
+            background-color: #1e1e1e;
+        }
+
+        body.dark-mode .left .user {
+            border-bottom-color: #333;
+        }
+
+        body.dark-mode .left .search input,
+        body.dark-mode .left .search button {
+            background-color: #2d2d2d;
+            color: #eee;
+        }
+
+        body.dark-mode .right .title {
+            background-color: #2d2d2d;
+            color: #eee;
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .right .message-show {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .message .box p {
+            background-color: #3d3d3d;
+            color: #eee;
+        }
+
+        body.dark-mode .message-right .box p {
+            background-color: #1e88e5;
+        }
+
+        body.dark-mode .input-area {
+            background-color: #2d2d2d;
+            border-top-color: #444;
+        }
+
+        body.dark-mode .message-input textarea {
+            background-color: #3d3d3d;
+            color: #eee;
+            border-color: #555;
+        }
+
+        body.dark-mode .emoji-bar {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .ctrl button {
+            background-color: #1e88e5;
+        }
+
+        body.dark-mode .session-item.sticky {
+            background-color: #2a2a2a;
+        }
+
+        body.dark-mode .friend-request-card {
+            background-color: #2d2d2d;
+            color: #eee;
+        }
+
+        body.dark-mode .friend-request-name {
+            color: #eee;
+        }
+
+        body.dark-mode .friend-request-reason {
+            background-color: #3d3d3d;
+            color: #aaa;
+        }
+
+        body.dark-mode .friend-request-footer button {
+            background-color: #2d2d2d;
+            color: #eee;
+            border-top-color: #444;
+        }
+
+        body.dark-mode .create-group-card {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .create-group-header {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .create-group-body input {
+            background-color: #3d3d3d;
+            color: #eee;
+            border-color: #555;
+        }
+
+        body.dark-mode .friend-select-list {
+            border-color: #444;
+        }
+
+        body.dark-mode .friend-select-item {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .friend-select-item:hover {
+            background-color: #3d3d3d;
+        }
+
+        body.dark-mode .create-group-footer {
+            border-top-color: #444;
+        }
+
         body.dark-mode .create-group-footer button:last-child {
             background-color: #3d3d3d;
             color: #eee;
+        }
+
+        body.dark-mode .search-message-area {
+            background-color: #2d2d2d;
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .search-message-area input {
+            background-color: #3d3d3d;
+            color: #eee;
+            border-color: #555;
+        }
+
+        body.dark-mode .search-result-item {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .search-result-item:hover {
+            background-color: #3d3d3d;
+        }
+
+        body.dark-mode .emoji-panel {
+            background-color: #2d2d2d;
+            border-color: #444;
+        }
+
+        body.dark-mode .emoji-panel .emoji:hover {
+            background-color: #3d3d3d;
+        }
+
+        body.dark-mode .container {
+            background-color: #1a1a1a;
+        }
+
+        body.dark-mode .main {
+            background-color: #2d2d2d;
         }
     </style>
 </head>

@@ -1,12 +1,11 @@
 // 全局变量
 let currentSessionId = null;
 let currentFriendId = null;
-let currentChatType = 'friend'; // 'friend' or 'group'
+let currentChatType = 'friend';
 let websocket = null;
 let unreadCounts = {};
 let messageElements = {};
 let typingTimeout = null;
-let isSearchMode = false;
 
 // 页面加载时执行
 $(document).ready(function() {
@@ -398,7 +397,6 @@ function clickSession($li) {
     currentChatType = 'friend';
     $('#chatTitle').text(friendName);
 
-    // 发送已读回执
     if (websocket && websocket.readyState === WebSocket.OPEN) {
         let message = {
             type: 'markRead',
@@ -805,7 +803,6 @@ function initAutoResize() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
 
-        // 正在输入状态（仅私聊）
         if (websocket && websocket.readyState === WebSocket.OPEN && currentSessionId && currentChatType === 'friend') {
             let message = {
                 type: 'typing',
@@ -871,12 +868,10 @@ function initWebSocket() {
         return;
     }
 
-    // 自动获取当前访问地址
     let host = window.location.hostname;
     let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     let wsUrl = protocol + '//' + host + ':8080/message';
 
-    // 如果是外网访问（cpolar），使用 wss 且不需要端口
     if (host.includes('cpolar.top') || host.includes('cpolar.com')) {
         wsUrl = 'wss://' + host + '/message';
     }
@@ -976,9 +971,7 @@ function handleNewMessage(resp) {
         content = content.substring(0, 25) + '...';
     }
 
-    // 判断是私聊还是群聊
     if (resp.chatType === 'group') {
-        // 群聊消息
         let $groupLi = $(`li[data-group-id="${resp.sessionId}"]`);
         if ($groupLi.length === 0) {
             getGroupList();
@@ -1010,7 +1003,6 @@ function handleNewMessage(resp) {
             }
         }
     } else {
-        // 私聊消息
         let $sessionLi = $(`li[data-session-id="${resp.sessionId}"]`);
         if ($sessionLi.length === 0) {
             getSessionList();
@@ -1229,7 +1221,6 @@ function initSearchMessage() {
                     $messageShow.html('<div style="text-align:center; color:#999; padding:50px;">未找到相关消息</div>');
                     return;
                 }
-                let selfUsername = $('#userName').text();
                 for (let msg of messages) {
                     let $msgDiv = $('<div>').addClass('search-result-item').html(`
                         <div><strong>${escapeHtml(msg.fromName)}</strong> <span style="color:#999; font-size:12px;">${formatMessageTime(msg.postTime)}</span></div>
