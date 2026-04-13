@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.webchatroom.mapper.MessageMapper">
+
+    <!-- 获取私聊会话的历史消息 -->
+    <select id="getMessagesBySessionId" resultType="com.example.webchatroom.model.Message">
+        select m.messageId, m.fromId, u.username as fromName,
+        m.sessionId, m.content, m.postTime, m.isRevoked, m.isRead, m.imageUrl
+        from message m, user u
+        where m.sessionId = #{sessionId} and m.fromId = u.userId
+        order by m.postTime asc
+        limit 100
+    </select>
+
+    <!-- 获取群聊会话的历史消息 -->
+    <select id="getGroupMessages" resultType="com.example.webchatroom.model.Message">
+        select m.messageId, m.fromId, u.username as fromName,
+        m.sessionId as groupId, m.content, m.postTime, m.isRevoked, m.isRead, m.imageUrl
+        from message m, user u
+        where m.sessionId = #{groupId} and m.fromId = u.userId
+        order by m.postTime asc
+        limit 100
+    </select>
+
+    <!-- 保存消息 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="messageId">
+        insert into message (fromId, sessionId, content, postTime, isRevoked, isRead, imageUrl)
+        values (#{fromId}, #{sessionId}, #{content}, now(), 0, 0, #{imageUrl})
+    </insert>
+
+    <!-- 撤回消息 -->
+    <update id="revokeMessage">
+        update message set isRevoked = 1 where messageId = #{messageId}
+    </update>
+
+    <!-- 获取消息详情 -->
+    <select id="getMessageById" resultType="com.example.webchatroom.model.Message">
+        select * from message where messageId = #{messageId}
+    </select>
+
+    <!-- 标记消息为已读 -->
+    <update id="markMessageAsRead">
+        update message set isRead = 1 where messageId = #{messageId}
+    </update>
+
+    <!-- 标记会话中的所有消息为已读 -->
+    <update id="markSessionMessagesAsRead">
+        update message set isRead = 1
+        where sessionId = #{sessionId} and fromId != #{userId}
+    </update>
+
+    <!-- 获取会话中未读消息数量 -->
+    <select id="getUnreadCount" resultType="int">
+        select count(*) from message
+        where sessionId = #{sessionId} and fromId != #{userId} and isRead = 0
+    </select>
+
+    <!-- 搜索消息 -->
+    <select id="searchMessages" resultType="com.example.webchatroom.model.Message">
+        select m.*, u.username as fromName
+        from message m, user u, message_session_user s
+        where m.fromId = u.userId
+        and m.sessionId = s.sessionId
+        and s.userId = #{userId}
+        and m.content like concat('%', #{keyword}, '%')
+        order by m.postTime desc
+        limit 50
+    </select>
+
+</mapper>

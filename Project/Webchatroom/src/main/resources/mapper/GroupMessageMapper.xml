@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.webchatroom.mapper.GroupMessageMapper">
+
+    <select id="getGroupMessages" resultType="com.example.webchatroom.model.GroupMessage">
+        select m.messageId, m.fromId, u.username as fromName,
+        m.groupId, m.content, m.imageUrl, m.postTime, m.isRevoked
+        from group_message m, user u
+        where m.groupId = #{groupId} and m.fromId = u.userId
+        order by m.postTime asc
+        limit 100
+    </select>
+
+    <insert id="addGroupMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into group_message (fromId, groupId, content, imageUrl, postTime, isRevoked)
+        values (#{fromId}, #{groupId}, #{content}, #{imageUrl}, now(), 0)
+    </insert>
+
+    <update id="revokeGroupMessage">
+        update group_message set isRevoked = 1 where messageId = #{messageId}
+    </update>
+
+    <select id="getGroupMessageById" resultType="com.example.webchatroom.model.GroupMessage">
+        select * from group_message where messageId = #{messageId}
+    </select>
+
+</mapper>

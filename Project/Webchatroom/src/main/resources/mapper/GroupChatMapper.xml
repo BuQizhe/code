@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.webchatroom.mapper.GroupChatMapper">
+
+    <!-- 获取用户的所有群聊 -->
+    <select id="getUserGroups" resultType="com.example.webchatroom.model.GroupChat">
+        select g.*
+        from group_chat g, group_member m
+        where g.groupId = m.groupId and m.userId = #{userId}
+        order by g.createTime desc
+    </select>
+
+    <!-- 获取群成员 -->
+    <select id="getGroupMembers" resultType="com.example.webchatroom.model.Friend">
+        select u.userId as friendId, u.username as friendName
+        from group_member m, user u
+        where m.groupId = #{groupId} and m.userId = u.userId
+    </select>
+
+    <!-- 创建群聊 -->
+    <insert id="createGroup" useGeneratedKeys="true" keyProperty="groupId">
+        insert into group_chat (groupName, ownerId, createTime)
+        values (#{groupName}, #{ownerId}, now())
+    </insert>
+
+    <!-- 添加群成员 -->
+    <insert id="addGroupMember">
+        insert into group_member (groupId, userId, joinTime)
+        values (#{groupId}, #{userId}, now())
+    </insert>
+
+    <!-- 检查是否是群成员 -->
+    <select id="isGroupMember" resultType="int">
+        select count(*) from group_member
+        where groupId = #{groupId} and userId = #{userId}
+    </select>
+
+    <!-- 获取群聊最后一条消息 -->
+    <select id="getGroupLastMessage" resultType="java.lang.String">
+        select content
+        from message
+        where sessionId = #{groupId}
+        order by postTime desc
+        limit 1
+    </select>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.webchatroom.mapper.FriendMapper">
+
+    <!-- 查询好友列表 -->
+    <select id="selectFriendList" resultType="com.example.webchatroom.model.Friend">
+        select userId as friendId, username as friendName
+        from user
+        where userId in (select friendId from friend where userId = #{userId})
+    </select>
+
+    <!-- 搜索好友 -->
+    <select id="findFriend" resultType="com.example.webchatroom.model.Friend">
+        select userId as friendId, username as friendName
+        from user
+        where userId != #{selfUserId}
+        and username like concat('%', #{friendName}, '%')
+        and userId not in (select friendId from friend where userId = #{selfUserId})
+        and userId not in (select fromUserId from add_friend_request where toUserId = #{selfUserId} and status = 'pending')
+    </select>
+
+    <!-- 发送好友请求 -->
+    <insert id="addFriendRequest">
+        insert into add_friend_request (fromUserId, toUserId, reason, status)
+        values (#{fromUserId}, #{toUserId}, #{reason}, 'pending')
+    </insert>
+
+    <!-- 检查是否已发送过好友请求 -->
+    <select id="checkFriendRequest" resultType="com.example.webchatroom.model.AddFriendRequest">
+        select * from add_friend_request
+        where fromUserId = #{fromUserId} and toUserId = #{toUserId} and status = 'pending'
+    </select>
+
+    <!-- 获取待处理的好友请求 -->
+    <select id="getPendingFriendRequests" resultType="com.example.webchatroom.model.AddFriendRequest">
+        select r.*, u.username as fromUserName
+        from add_friend_request r, user u
+        where r.toUserId = #{toUserId} and r.status = 'pending' and r.fromUserId = u.userId
+    </select>
+
+    <!-- 接受好友请求 -->
+    <update id="acceptFriendRequest">
+        update add_friend_request set status = 'accepted'
+        where fromUserId = #{fromUserId} and toUserId = #{toUserId}
+    </update>
+
+    <!-- 拒绝好友请求 -->
+    <update id="rejectFriendRequest">
+        update add_friend_request set status = 'rejected'
+        where fromUserId = #{fromUserId} and toUserId = #{toUserId}
+    </update>
+
+    <!-- 添加好友关系（双向） -->
+    <insert id="addFriendRelation">
+        insert into friend values (#{userId}, #{friendId}), (#{friendId}, #{userId})
+    </insert>
+
+    <!-- 检查是否已经是好友 -->
+    <select id="isFriend" resultType="int">
+        select count(*) from friend where userId = #{userId} and friendId = #{friendId}
+    </select>
+
+</mapper>
